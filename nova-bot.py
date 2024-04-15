@@ -4,7 +4,8 @@ from localidadesBandejao import *
 from timeUtils import *
 
 # Inicialização do bot
-CHAVE_API = "6767150974:AAHrWWRrRckvNlHEwmf2DDCdEYncjo3lZi4"
+## adi access link to the bot here: []
+CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
 bot = telebot.TeleBot(CHAVE_API, parse_mode='MARKDOWN')
 
 # Resposta à opção "/onibus"
