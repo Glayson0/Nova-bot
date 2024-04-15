@@ -1,31 +1,11 @@
 import telebot
 from datetime import datetime
-
-# Horários do ônibus em inteiro HHMM
-dia_util_IDA = [630, 645, 650, 700, 710, 715, 720, 725, 735, 740, 745, 800, 810, 820, 830, 840,
-                850, 900, 910, 920, 930, 940, 945, 1005, 1015, 1030, 1045, 1100, 1120, 1130,
-                1145, 1200, 1215, 1220, 1235, 1245, 1300, 1305, 1320, 1330, 1345, 1400, 1415, 1430,
-                1445, 1500, 1515, 1530, 1545, 1600, 1615, 1630, 1645, 1700, 1730, 1745, 1800, 1810, 
-                1820, 1825, 1830, 1840, 1855, 1900, 1915, 1925, 1935, 1950, 1955, 2010, 2030, 2045]
-
-dia_util_VOLTA = [900, 930, 950, 1000, 1015, 1040, 1105, 1115, 1130, 1145, 1155, 1200,
-                  1220, 1230, 1245, 1250, 1300, 1315, 1330, 1345, 1400, 1415, 1430, 1445,
-                  1500, 1515, 1530, 1545, 1600, 1615, 1630, 1645, 1715, 1740, 1730, 1745,
-                  1750, 1800, 1815, 1820, 1830, 1840, 1850, 1905, 1910, 1925, 1935, 1945,
-                  2005, 2020, 2040, 2050, 2100, 2125, 2135, 2155, 2200, 2210, 2220, 2230,
-                  2235, 2245, 2305, 2315, 2325, 2335, 2345]
-
-findis_feriado_IDA = [710, 720, 730, 740, 750, 800, 810, 820, 1100, 1110, 1120, 1130, 
-                      1140, 1150, 1200, 1210, 1220, 1230, 1240, 1250, 1300, 1310, 1320, 
-                      1330, 1340, 1350, 1730, 1740, 1750, 1800, 1810, 1820, 1830, 1840, 1850]
-
-findis_feriado_VOLTA = [720, 730, 740, 750, 800, 810, 820, 830, 1110, 1120, 1130, 1140, 
-                        1150, 1200, 1210, 1220, 1230, 1240, 1250, 1300, 1310, 1320, 1330, 
-                        1340, 1350, 1400, 1740, 1750, 1800, 1810, 1820, 1830, 1840, 1850, 1900]
+from localidadesBandejao import *
+from timeUtils import *
 
 # Inicialização do bot
-CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
-bot = telebot.TeleBot(CHAVE_API)
+CHAVE_API = "6767150974:AAHrWWRrRckvNlHEwmf2DDCdEYncjo3lZi4"
+bot = telebot.TeleBot(CHAVE_API, parse_mode='MARKDOWN')
 
 # Resposta à opção "/onibus"
 @bot.message_handler(commands=["onibus"]) # funciona quando recebe o comando "onibus"
@@ -34,29 +14,7 @@ def onibus(mensagem):
     h_atual = int(datetime.fromtimestamp(mensagem.date).strftime('%H%M'))
     h_atual_f = datetime.fromtimestamp(mensagem.date).strftime('%H:%M')
 
-    # Dia atual
-    dia_atual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Em inglês
-    # Conversão para pt-br
-    if dia_atual == "Monday":
-        dia_atual = "Segunda"
-
-    elif dia_atual == "Tuesday":
-        dia_atual = "Terça"
-
-    elif dia_atual == "Wednesday":
-        dia_atual = "Quarta"
-
-    elif dia_atual == "Thursday":
-        dia_atual = "Quinta"
-
-    elif dia_atual == "Friday":
-        dia_atual = "Sexta"
-
-    elif dia_atual == "Saturday":
-        dia_atual = "Sábado"
-
-    elif dia_atual == "Sunday":
-        dia_atual = "Domingo"
+    dia_atual = getCurrentDay(mensagem)
 
     # Pegar lista de horários correspondente ao dia_atual
     if dia_atual in 'Segunda Terça Quarta Quinta Sexta':
@@ -106,7 +64,7 @@ def onibus(mensagem):
 
     # Envio da mensagem no chat
     bot.send_message(mensagem.chat.id,
-f"""###### HORÁRIO ÔNIBUS ######
+f"""🚌🚌🚌 HORÁRIO ÔNIBUS 🚌🚌🚌
 
 Dia atual: {dia_atual}
 Horário atual: {h_atual_f}
@@ -116,8 +74,63 @@ Próximo ônibus VOLTA: {prox_onibus_VOLTA_f} ({intervalo_tempo_onibus_VOLTA} mi
 # Resposta à opção "/bandejao"
 @bot.message_handler(commands=["bandejao"]) # funciona quando recebe o comando "bandejao"
 def bandejao(mensagem):
-      bot.reply_to(mensagem, "Já tá querendo ao mossar, é?")
-      pass
+
+    # Horario atual (inteiro e formatado)
+    h_atual = int(datetime.fromtimestamp(mensagem.date).strftime('%H%M'))
+    h_atual_f = datetime.fromtimestamp(mensagem.date).strftime('%H:%M')
+
+    dia_atual = getCurrentDay(mensagem)
+
+    h_atual_time = datetime.strptime(h_atual_f, '%H:%M')
+
+    def printLocalidades():
+        if (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 730):
+            prox_refeicao = 'o Café da Manhã'
+            localidades = cafeLocalidades
+        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1030):
+            prox_refeicao = 'o Almoço'
+            localidades = almocoLocalidades
+        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1730):
+            prox_refeicao = 'o Jantar'
+            localidades = jantarLocalidades
+        elif (dia_atual in 'Sábado') and (h_atual < 1030):
+            prox_refeicao = 'o Almoço'
+            localidades = almocoLocalidades['RS']
+        elif (dia_atual in 'Sábado') and (h_atual < 1730):
+            prox_refeicao = 'o Jantar'
+            localidades = jantarLocalidades['RS']
+        elif (dia_atual in 'Domingo') and (h_atual < 1030):
+            prox_refeicao = 'o Almoço'
+            localidades = almocoLocalidades['RS']
+
+        if dia_atual in 'Sábado Domingo':
+            return f"""
+- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
+   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+            """
+        elif localidades == cafeLocalidades:
+            return f"""
+- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
+   · faltam {datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+            """
+        else:
+            return f"""
+- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
+   · faltam {datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+- RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
+   · faltam {datetime.strptime(localidades['RA'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
+   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} hora para {prox_refeicao}
+            """
+
+    # Envio da mensagem no chat
+    bot.send_message(mensagem.chat.id, 
+f"""🍽️🥛🍎 HORÁRIOS DE REFEIÇÃO 🍽️🥛🍎
+
+Dia atual: {dia_atual}
+Horário atual: {h_atual_f}
+{printLocalidades()}    
+""")
 
 def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale para qualquer mensagem)
     return True
@@ -127,12 +140,12 @@ def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale par
 def responder(mensagem):
     menu = """
     Qual função gostaria de acessar? (Clique no item):
-    · /onibus - Ver horário do próximo ônibus
-    · /bandejao - Ver horário da próxima refeição
+ 🚌 · /onibus - Ver horário do próximo ônibus
+ 🍽️ · /bandejao - Ver horário da próxima refeição
     Responder qualquer coisa não funcionará. Clique em uma das opções.
     """
 
-    bot.reply_to(mensagem, f'Olá, {mensagem.chat.first_name}! Como vai?')
+    bot.reply_to(mensagem, f'👋 Olá, {mensagem.chat.first_name}! Como vai?')
     bot.send_message(mensagem.chat.id, menu)
 
 bot.polling() # Vai checar a mensagem recebida pelo bot
