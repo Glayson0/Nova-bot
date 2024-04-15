@@ -4,7 +4,7 @@ from localidadesBandejao import *
 from timeUtils import *
 
 # Inicialização do bot
-## adi access link to the bot here: []
+## add access link to the bot here: [https://t.me/unicampus_bot]
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
 bot = telebot.TeleBot(CHAVE_API, parse_mode='MARKDOWN')
 
@@ -121,7 +121,7 @@ def bandejao(mensagem):
 - RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
    · faltam {datetime.strptime(localidades['RA'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
 - RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} hora para {prox_refeicao}
+   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
             """
 
     # Envio da mensagem no chat
