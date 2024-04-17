@@ -84,53 +84,13 @@ def bandejao(mensagem):
 
     h_atual_time = datetime.strptime(h_atual_f, '%H:%M')
 
-    def printLocalidades():
-        if (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 730):
-            prox_refeicao = 'o Café da Manhã'
-            localidades = cafeLocalidades
-        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades
-        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1730):
-            prox_refeicao = 'o Jantar'
-            localidades = jantarLocalidades
-        elif (dia_atual in 'Sábado') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-        elif (dia_atual in 'Sábado') and (h_atual < 1730):
-            prox_refeicao = 'o Jantar'
-            localidades = jantarLocalidades['RS']
-        elif (dia_atual in 'Domingo') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-
-        if dia_atual in 'Sábado Domingo':
-            return f"""
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-            """
-        elif localidades == cafeLocalidades:
-            return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-   · faltam {datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-            """
-        else:
-            return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-   · faltam {datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-- RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
-   · faltam {datetime.strptime(localidades['RA'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-   · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-            """
-
     # Envio da mensagem no chat
     bot.send_message(mensagem.chat.id, 
 f"""🍽️🥛🍎 HORÁRIOS DE REFEIÇÃO 🍽️🥛🍎
 
 Dia atual: {dia_atual}
 Horário atual: {h_atual_f}
-{printLocalidades()}    
+{printLocalidades(dia_atual, h_atual, h_atual_time)}    
 """)
 
 def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale para qualquer mensagem)
