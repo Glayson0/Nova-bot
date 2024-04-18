@@ -1,4 +1,5 @@
 from datetime import datetime
+from timeUtils import *
 
 cafeLocalidades = {
     'RU': ['07:30','08:30']
@@ -23,7 +24,6 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         if h_atual < 830:
             prox_refeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
-            time_until = datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time
         elif h_atual < 1400:
             prox_refeicao = 'o Almoço'
             localidades = almocoLocalidades
@@ -33,51 +33,51 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         elif h_atual > 1945:
             prox_refeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
+            left = getTimeDifference(h_atual, 730)
 
     ##Sabado
     elif dia_atual in 'Sábado':
         if h_atual < 1030:
             prox_refeicao = 'o Almoço'
             localidades = almocoLocalidades['RS']
+            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
         elif h_atual < 1730:
             prox_refeicao = 'o Jantar'
             localidades = jantarLocalidades['RS']
+            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
         elif h_atual > 1945:
             prox_refeicao = 'o Almoço'
             localidades = almocoLocalidades['RS']
-
+            left = getTimeDifference(h_atual, 730)
     
     ##Domingo
-    elif (dia_atual in 'Domingo') and (h_atual < 1030):
+    elif (dia_atual in 'Domingo'):
         if h_atual < 1030:
             prox_refeicao = 'o Almoço'
             localidades = almocoLocalidades['RS']
+            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
         else:
             prox_refeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
+            left = getTimeDifference(h_atual, 730)
         
     ##Present Results
-    if dia_atual in 'Sábado Domingo':
-        return f"""
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-· faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
-        """
-    elif localidades == cafeLocalidades:
-        if h_atual > 830:
-            ## logic for calculating time until next meal
-        else:
-            left = datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time
+    if localidades == cafeLocalidades:
         return f"""
 - RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
 · faltam {left} horas para {prox_refeicao}
-    
+        """
+    elif dia_atual in 'Sábado Domingo':
+        return f"""
+- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
+· faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
         """
     else:
         return f"""
 - RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-· faltam {datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RU'][0]), h_atual_time)} horas para {prox_refeicao}
 - RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
-· faltam {datetime.strptime(localidades['RA'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RA'][0]), h_atual_time)} horas para {prox_refeicao}
 - RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-· faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RS'][0]), h_atual_time)} horas para {prox_refeicao}
         """
