@@ -129,75 +129,13 @@ def bandejao(mensagem):
 
     h_atual_time = datetime.strptime(h_atual_f, '%H:%M')
 
-    def printLocalidades():
-        # Identificação da próxima refeição
-        if (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 730):
-            prox_refeicao = 'o Café da Manhã'
-            localidades = cafeLocalidades
-        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades
-        elif (dia_atual in 'Segunda Terça Quarta Quinta Sexta') and (h_atual < 1730):
-            prox_refeicao = 'o Jantar'
-            localidades = jantarLocalidades
-        elif (dia_atual in 'Sábado') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-        elif (dia_atual in 'Sábado') and (h_atual < 1730):
-            prox_refeicao = 'o Jantar'
-            localidades = jantarLocalidades['RS']
-        elif (dia_atual in 'Domingo') and (h_atual < 1030):
-            prox_refeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-
-        # Intervalos de tempo de cada restaurante (em minutos)
-        intervalo_tempo_RS = (datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time).seconds // 60
-        intervalo_tempo_RA = (datetime.strptime(localidades['RA'][0], '%H:%M') - h_atual_time).seconds // 60
-        intervalo_tempo_RU = (datetime.strptime(localidades['RU'][0], '%H:%M') - h_atual_time).seconds // 60
-
-        if intervalo_tempo_RS > 60:
-            intervalo_tempo_RS = f'{intervalo_tempo_RS // 60} hora(s) e {intervalo_tempo_RS % 60} minuto(s)'
-        else:
-            intervalo_tempo_RS = f'{intervalo_tempo_RS % 60} minuto(s)'
-
-        if intervalo_tempo_RA > 60:
-            intervalo_tempo_RA = f'{intervalo_tempo_RA // 60} hora(s) e {intervalo_tempo_RA % 60} minuto(s)'
-        else:
-            intervalo_tempo_RA = f'{intervalo_tempo_RA % 60} minuto(s)'
-
-        if intervalo_tempo_RU > 60:
-            intervalo_tempo_RU = f'{intervalo_tempo_RU // 60} hora(s) e {intervalo_tempo_RU % 60} minuto(s)'
-        else:
-            intervalo_tempo_RU = f'{intervalo_tempo_RU % 60} minuto(s)'
-
-        # Output intervalo de tempo
-        if dia_atual in 'Sábado Domingo':
-            return f"""
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-   · faltam {intervalo_tempo_RS} para {prox_refeicao}
-            """
-        elif localidades == cafeLocalidades:
-            return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-   · faltam {intervalo_tempo_RU} para {prox_refeicao}
-            """
-        else:
-            return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-   · faltam {intervalo_tempo_RU} para {prox_refeicao}
-- RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
-   · faltam {intervalo_tempo_RA} para {prox_refeicao}
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-   · faltam {intervalo_tempo_RS} para {prox_refeicao}
-            """
-
     # Envio da mensagem no chat
     bot.send_message(mensagem.chat.id, 
 f"""🍽️🥛🍎 HORÁRIOS DE REFEIÇÃO 🍽️🥛🍎
 
 Dia atual: {dia_atual}
 Horário atual: {h_atual_f}
-{printLocalidades()}    
+{printLocalidades(dia_atual, h_atual, h_atual_time)}    
 """)
 
 def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale para qualquer mensagem)
