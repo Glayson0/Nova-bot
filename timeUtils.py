@@ -70,11 +70,7 @@ def format_time(time_str):
 
 def getTimeDifference(h1, h2):
     if h1 > h2:
-        h1 = datetime.strptime(str(h1), '%H%M')
-        h2 = datetime.strptime(str(h2), '%H%M')
-
         h2 += timedelta(days=1)
-
         until_h2 = h2 - h1
         return until_h2
     if h1 == h2:
@@ -82,9 +78,12 @@ def getTimeDifference(h1, h2):
     if h1 < h2:
         return timedelta(hours=h2 // 100, minutes=h2 % 100) - timedelta(hours=h1 // 100, minutes=h1 % 100)
     
-def convertToInt(string):
-    if string[0] == 0:
-        del string[0]
-        print(string)
-    string.replace(':','')
+def convertToInt(time):
+    time = str(time)
+    if time[0] == 0:
+        del time[0]
+    return int(time.replace(':',''))
+
+def convertToString(datetime):
+    return datetime.strftime('%H:%M')
 

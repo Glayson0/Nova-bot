@@ -24,6 +24,7 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         if h_atual < 830:
             prox_refeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
+            left = getTimeDifference(h_atual, 730)
         elif h_atual < 1400:
             prox_refeicao = 'o Almoço'
             localidades = almocoLocalidades
@@ -75,9 +76,9 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
     else:
         return f"""
 - RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RU'][0]), h_atual_time)} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RU'][0]), h_atual)} horas para {prox_refeicao}
 - RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RA'][0]), h_atual_time)} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RA'][0]), h_atual)} horas para {prox_refeicao}
 - RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RS'][0]), h_atual_time)} horas para {prox_refeicao}
+· faltam {getTimeDifference(convertToInt(localidades['RS'][0]), h_atual)} horas para {prox_refeicao}
         """

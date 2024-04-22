@@ -130,7 +130,7 @@ def bandejao(mensagem):
     h_atual_time = datetime.strptime(h_atual_f, '%H:%M')
 
     # Envio da mensagem no chat
-    bot.send_message(mensagem.chat.id, 
+    bot.send_message(mensagem.chat.id,
 f"""🍽️🥛🍎 HORÁRIOS DE REFEIÇÃO 🍽️🥛🍎
 
 Dia atual: {dia_atual}
