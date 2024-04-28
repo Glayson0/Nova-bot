@@ -13,96 +13,68 @@ bot = telebot.TeleBot(CHAVE_API, parse_mode='MARKDOWN')
 def onibus(mensagem):
 
     ha_onibus_IDA = ha_onibus_VOLTA = True
-    
-    # Horario atual (inteiro e formatado)
 
-    h_atual = int(datetime.fromtimestamp(mensagem.date).strftime('%H%M'))
-    h_atual_f = datetime.fromtimestamp(mensagem.date).strftime('%H:%M')
-
+    h_atual = datetime.fromtimestamp(mensagem.date)
     dia_atual = getCurrentDay(mensagem)
-
-    #### Pegar lista de horários correspondente ao dia_atual
 
     # DIA ÚTIL
     if dia_atual in 'Segunda Terça Quarta Quinta Sexta':
 
         # Condição para quando não tiver mais ônibus no dia
-        if h_atual > onibus_util_IDA[-1]:
+        if h_atual > fStrToTime(onibus_util_IDA[-1]):
             ha_onibus_IDA = False
 
-        if h_atual > onibus_util_VOLTA[-1]:
+        if h_atual > fStrToTime(onibus_util_VOLTA[-1]):
             ha_onibus_VOLTA = False
 
         # Encontrar próximos ônibus
         for h_onibus_IDA in onibus_util_IDA:
-            if h_atual <= h_onibus_IDA:
-                prox_onibus_IDA = str(h_onibus_IDA)
+            if h_atual <= fStrToTime(h_onibus_IDA):
                 break
         for h_onibus_VOLTA in onibus_util_VOLTA:
-            if h_atual <= h_onibus_VOLTA:
-                prox_onibus_VOLTA = str(h_onibus_VOLTA)
+            if h_atual <= fStrToTime(h_onibus_VOLTA):
                 break
     
     # FIM DE SEMANA
     else:
 
         # Condição para quando não tiver mais ônibus de IDA no dia
-        if h_atual > onibus_findis_IDA[-1]:
+        if h_atual > fStrToTime(onibus_findis_IDA[-1]):
             ha_onibus_IDA = False
         else:
             # Encontrar próximos ônibus
             for h_onibus_IDA in onibus_findis_IDA:
-                if h_atual <= h_onibus_IDA:
-                    prox_onibus_IDA = str(h_onibus_IDA)
+                if h_atual <= fStrToTime(h_onibus_IDA):
                     break
 
         # Condição para quando não tiver mais ônibus de VOLTA no dia
-        if h_atual > onibus_findis_VOLTA[-1]:
+        if h_atual > fStrToTime(onibus_findis_VOLTA[-1]):
             ha_onibus_VOLTA = False
         else:
             for h_onibus_VOLTA in onibus_findis_VOLTA:
-                    prox_onibus_VOLTA = str(h_onibus_VOLTA)
-                    break
-        
-    ###  Formatação do horário inteiro para str HH:MM
-    # IDA
-    if ha_onibus_IDA == True:
-        prox_onibus_IDA_list = list(prox_onibus_IDA)
-        if len(prox_onibus_IDA_list) == 3:
-            prox_onibus_IDA_list.insert(0, '0'); prox_onibus_IDA_list.insert(2, ':')
-        else:
-            prox_onibus_IDA_list.insert(2, ':')
-        prox_onibus_IDA_f = ''.join(prox_onibus_IDA_list)
-    # VOLTA
-    if ha_onibus_VOLTA == True:
-        prox_onibus_VOLTA_list = list(prox_onibus_VOLTA)
-        if len(prox_onibus_VOLTA_list) == 3:
-            prox_onibus_VOLTA_list.insert(0, '0'); prox_onibus_VOLTA_list.insert(2, ':')
-        else:
-            prox_onibus_VOLTA_list.insert(2, ':')
-        prox_onibus_VOLTA_f = ''.join(prox_onibus_VOLTA_list)
-
-    ### Tempo em minutos até o próximo ônibus
-    # Definindo dois horários
-    h_atual_time = datetime.strptime(h_atual_f, '%H:%M')
-    if ha_onibus_IDA == True:
-        prox_onibus_IDA_time = datetime.strptime(prox_onibus_IDA_f, '%H:%M') # Ida
-    if ha_onibus_VOLTA == True:
-        prox_onibus_VOLTA_time = datetime.strptime(prox_onibus_VOLTA_f, '%H:%M') # Volta
+                    if h_atual <= fStrToTime(h_onibus_VOLTA):
+                        break
 
     # Calculando a diferença de tempo
     if ha_onibus_IDA == True:
-        intervalo_tempo_onibus_IDA = (prox_onibus_IDA_time - h_atual_time).seconds // 60 # Ida
+        delta_onibus_IDA = getTimeDifference2(h_onibus_IDA, h_atual)
     if ha_onibus_VOLTA == True:
-        intervalo_tempo_onibus_VOLTA = (prox_onibus_VOLTA_time - h_atual_time).seconds // 60 # Volta
+        delta_onibus_VOLTA = getTimeDifference2(h_onibus_VOLTA, h_atual)
 
+    # Output
     if ha_onibus_IDA == True:
-        output_prox_IDA = f'{prox_onibus_IDA_f} ({intervalo_tempo_onibus_IDA} min)'
+        if delta_onibus_IDA.hour > 0:
+            output_prox_IDA = f'{h_onibus_IDA} ({delta_onibus_IDA.hour} hr(s) e {delta_onibus_IDA.minute} min(s))'
+        else:
+            output_prox_IDA = f'{h_onibus_IDA} ({delta_onibus_IDA.minute} min(s))'
     else:
         output_prox_IDA = 'acabaram os ônibus de hoje!'
 
     if ha_onibus_VOLTA == True:
-        output_prox_VOLTA = f'{prox_onibus_VOLTA_f} ({intervalo_tempo_onibus_VOLTA} min)'
+        if delta_onibus_VOLTA.hour > 0:
+            output_prox_VOLTA = f'{h_onibus_IDA} ({delta_onibus_VOLTA.hour} hr(s) e {delta_onibus_VOLTA.minute} min(s))'
+        else:
+            output_prox_VOLTA = f'{h_onibus_IDA} ({delta_onibus_VOLTA.minute} min(s))'
     else:
         output_prox_VOLTA = 'acabaram os ônibus de hoje!'
 
@@ -111,7 +83,7 @@ def onibus(mensagem):
     f"""🚌🚌🚌 HORÁRIO ÔNIBUS 🚌🚌🚌
 
     Dia atual: {dia_atual}
-    Horário atual: {h_atual_f}
+    Horário atual: {fTimeToStr(h_atual)}
     
     Próximo ônibus IDA: {output_prox_IDA}
     Próximo ônibus VOLTA: {output_prox_VOLTA}"""
