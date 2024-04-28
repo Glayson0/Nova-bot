@@ -37,7 +37,6 @@ def onibus(mensagem):
     
     # FIM DE SEMANA
     else:
-
         # Condição para quando não tiver mais ônibus de IDA no dia
         if h_atual > fStrToTime(onibus_findis_IDA[-1]):
             ha_onibus_IDA = False
@@ -64,7 +63,7 @@ def onibus(mensagem):
     # Output
     if ha_onibus_IDA == True:
         if delta_onibus_IDA.hour > 0:
-            output_prox_IDA = f'{h_onibus_IDA} ({delta_onibus_IDA.hour} hr(s) e {delta_onibus_IDA.minute} min(s))'
+            output_prox_IDA = f'{h_onibus_IDA} ({delta_onibus_IDA.hour} hr e {delta_onibus_IDA.minute} min)'
         else:
             output_prox_IDA = f'{h_onibus_IDA} ({delta_onibus_IDA.minute} min(s))'
     else:
@@ -72,9 +71,9 @@ def onibus(mensagem):
 
     if ha_onibus_VOLTA == True:
         if delta_onibus_VOLTA.hour > 0:
-            output_prox_VOLTA = f'{h_onibus_IDA} ({delta_onibus_VOLTA.hour} hr(s) e {delta_onibus_VOLTA.minute} min(s))'
+            output_prox_VOLTA = f'{h_onibus_VOLTA} ({delta_onibus_VOLTA.hour} hr e {delta_onibus_VOLTA.minute} min)'
         else:
-            output_prox_VOLTA = f'{h_onibus_IDA} ({delta_onibus_VOLTA.minute} min(s))'
+            output_prox_VOLTA = f'{h_onibus_VOLTA} ({delta_onibus_VOLTA.minute} min(s))'
     else:
         output_prox_VOLTA = 'acabaram os ônibus de hoje!'
 
@@ -82,11 +81,11 @@ def onibus(mensagem):
     bot.send_message(mensagem.chat.id,
     f"""🚌🚌🚌 HORÁRIO ÔNIBUS 🚌🚌🚌
 
-    Dia atual: {dia_atual}
-    Horário atual: {fTimeToStr(h_atual)}
+Dia atual: {dia_atual}
+Horário atual: {fTimeToStr(h_atual)}
     
-    Próximo ônibus IDA: {output_prox_IDA}
-    Próximo ônibus VOLTA: {output_prox_VOLTA}"""
+Próximo ônibus IDA: {output_prox_IDA}
+Próximo ônibus VOLTA: {output_prox_VOLTA}"""
     )
 
 ########### Resposta à opção "/bandejao"

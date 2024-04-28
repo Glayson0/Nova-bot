@@ -94,7 +94,14 @@ def fTimeToStr(h):
     return datetime.strftime(h, '%H:%M')
 
 def fStrToTime(h):
-    return datetime.strptime(h, '%H:%M')
+    agora = datetime.now()
+    h = datetime.strptime(h, '%H:%M')
+    return datetime(agora.year, agora.month, agora.day, h.hour, h.minute)
 
 def getTimeDifference2(h1, h2):
+    if type(h1) == str:
+        h1 = fStrToTime(h1)
+    if type(h2) == str:
+        h2 = fStrToTime(h2)
+
     return h1 - timedelta(hours=h2.hour, minutes=h2.minute)
