@@ -115,12 +115,30 @@ def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale par
 # Função que manda o Menu independentemente da mensagem do usuário
 @bot.message_handler(func=verificar)
 def responder(mensagem):
+#     menu = """
+#     Qual função gostaria de acessar? (Clique no item):
+#  🚌 · /onibus - Ver horário do próximo ônibus
+#  🍽️ · /bandejao - Ver horário da próxima refeição
+#     Responder qualquer coisa não funcionará. Clique em uma das opções.
+#     """
     menu = """
-    Qual função gostaria de acessar? (Clique no item):
- 🚌 · /onibus - Ver horário do próximo ônibus
- 🍽️ · /bandejao - Ver horário da próxima refeição
-    Responder qualquer coisa não funcionará. Clique em uma das opções.
-    """
+(MENU TEMPORÁRIO)
+Lista com todos os comandos:
+
+    ÔNIBUS
+        - /onibus
+        - /oTodos
+        - /oProx
+
+    BANDEJÃO
+        - /bandejao
+        - /bHoras
+        - /bCardapio
+        - /bJapode
+        - /ru
+        - /rs
+        - /ra
+"""
 
     bot.reply_to(mensagem, f'👋 Olá, {mensagem.chat.first_name}! Como vai?')
     bot.send_message(mensagem.chat.id, menu)
