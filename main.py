@@ -28,7 +28,7 @@ Clique no botão abaixo ou digite /help para conhecer alguns dos comandos que vo
 
 # Help section
 @bot.message_handler(commands=["help"])
-def responder(message):
+def help(message):
 
     menuDescription = """
 \- /onibus: Ver comandos para os ônibus da moradia
@@ -50,8 +50,10 @@ def responder(message):
 
 # Onibus
 @bot.message_handler(commands=["onibus"])
-def busCommands(message):
+def onibus(message):
     onibusDescription = """
+\- /oTodos: Ver foto com todos os horários de ônibus
+
 \- /oTodosIda: Ver todos os horários de ônibus de IDA do dia \(Moradia \-\> Unicamp\)
 
 \- /oTodosVolta: Ver todos os horários de ônibus de VOLTA dia \(Unicamp \-\> Moradia\)
@@ -59,14 +61,18 @@ def busCommands(message):
 \- /oProx: Ver os próximos 2 ônibus de ida e de volta
 """
     busButtons = ReplyKeyboardMarkup(resize_keyboard=True)
-    busButtons.add(KeyboardButton('/oTodosIda'), KeyboardButton('/oTodosVolta'), KeyboardButton('/oTodosProx'))
+
+    busButtons.add(KeyboardButton('/oTodos'))
+    busButtons.add(KeyboardButton('/oTodosIda'))
+    busButtons.add(KeyboardButton('/oTodosVolta'))
+    busButtons.add(KeyboardButton('/oTodosProx'))
 
     bot.reply_to(message, 'Okay\! Aqui estão os comandos para os ônibus da moradia:')
     bot.send_message(message.chat.id, onibusDescription, reply_markup=busButtons)
 
 # Bandejao
 @bot.message_handler(commands=["bandejao"])
-def bandejaoCommands(message):
+def bandejao(message):
     bandejaoDescription = """
 Geral
 \- /bHoras: Ver os horários dos três restaurantes
@@ -92,7 +98,7 @@ Restaurantes
 
 # Cardapio
 @bot.message_handler(commands=["bCardapio"])
-def dietMenu(message):
+def bCardapio(message):
     dietMenuDescription = """
 \- /bTradicional: Cardápio tradicional
 
@@ -110,10 +116,15 @@ def dietMenu(message):
 
 
 
-# Funcionalidades
+#### Funcionalidades
 
+## Ônibus
 
-
+# oTodos
+@bot.message_handler(commands=["oTodos"])
+def oTodos(mensagem):
+    bot.send_message(mensagem.chat.id, 'Aqui está a foto com todos os horários dos ônibus da moradia:')
+    bot.send_photo(mensagem.chat.id, 'https://i.pinimg.com/736x/8f/72/57/8f7257a0d878b4ce78543183ace8acf1.jpg')
 
 @bot.message_handler(commands=["onibusProx"]) # funciona quando recebe o comando "onibus"
 def onibus(mensagem):
