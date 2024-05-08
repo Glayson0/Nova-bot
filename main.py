@@ -1,4 +1,5 @@
 import telebot
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
 from localidadesBandejao import *
 from timeUtils import *
@@ -6,10 +7,115 @@ from timeUtils import *
 # Inicialização do bot
 ## add access link to the bot here: [https://t.me/unicampus_bot]
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
-bot = telebot.TeleBot(CHAVE_API, parse_mode='MARKDOWN')
+bot = telebot.TeleBot(CHAVE_API, parse_mode='MarkdownV2')
 
-########## Resposta à opção "/onibus"
-@bot.message_handler(commands=["onibus"]) # funciona quando recebe o comando "onibus"
+@bot.message_handler(commands=["start"])
+def start(message):
+
+    startMessage = f"""
+Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
+
+Meu objetivo é fornecer informações dos ônibus da moradia e dos restaurantes da Unicamp de forma rápida e fácil\.
+
+Clique no botão abaixo ou digite /help para conhecer alguns dos comandos que você pode utilizar\.
+"""
+
+    startButton = ReplyKeyboardMarkup(resize_keyboard=True)
+    startButton.add(KeyboardButton('/help'))
+
+    bot.send_message(message.chat.id, f'👋 Olá, {message.chat.first_name}\! Como vai?')
+    bot.send_message(message.chat.id, startMessage, reply_markup=startButton)
+
+# Help section
+@bot.message_handler(commands=["help"])
+def responder(message):
+
+    menuDescription = """
+\- /onibus: Ver comandos para os ônibus da moradia
+
+\- /bandejao: Ver os comandos para o bandejao
+
+\- /tudo: Listar todos os comandos
+"""  
+
+    menuButtons = ReplyKeyboardMarkup(resize_keyboard=True)
+    menuButtons.add(KeyboardButton('/onibus'))
+    menuButtons.add(KeyboardButton('/bandejao'))
+    menuButtons.add(KeyboardButton('/tudo'))
+
+    bot.reply_to(message, 'Entendido\! Aqui está uma lista com os comandos principais:')
+
+
+    bot.send_message(message.chat.id, menuDescription, reply_markup=menuButtons)
+
+# Onibus
+@bot.message_handler(commands=["onibus"])
+def busCommands(message):
+    onibusDescription = """
+\- /oTodosIda: Ver todos os horários de ônibus de IDA do dia \(Moradia \-\> Unicamp\)
+
+\- /oTodosVolta: Ver todos os horários de ônibus de VOLTA dia \(Unicamp \-\> Moradia\)
+
+\- /oProx: Ver os próximos 2 ônibus de ida e de volta
+"""
+    busButtons = ReplyKeyboardMarkup(resize_keyboard=True)
+    busButtons.add(KeyboardButton('/oTodosIda'), KeyboardButton('/oTodosVolta'), KeyboardButton('/oTodosProx'))
+
+    bot.reply_to(message, 'Okay\! Aqui estão os comandos para os ônibus da moradia:')
+    bot.send_message(message.chat.id, onibusDescription, reply_markup=busButtons)
+
+# Bandejao
+@bot.message_handler(commands=["bandejao"])
+def bandejaoCommands(message):
+    bandejaoDescription = """
+Geral
+\- /bHoras: Ver os horários dos três restaurantes
+
+\- /bCardapio: Ver o cardápio de almoço e jantar
+
+\- /bJaPode: Ver refeições em andamento
+
+Restaurantes
+\- /ru: Ver informações do RU
+
+\- /rs: Ver informações do RS
+
+\- /ra: Ver informações do RA
+"""
+
+    bandejaoButtons = ReplyKeyboardMarkup(resize_keyboard=True)
+    bandejaoButtons.add(KeyboardButton('/bHoras'), KeyboardButton('/bCardapio'), KeyboardButton('/bJaPode'))
+    bandejaoButtons.add(KeyboardButton('/ru'), KeyboardButton('/rs'), KeyboardButton('/ra'))
+
+    bot.reply_to(message, 'Certo\! Aqui estão os comandos para o bandejão:')
+    bot.send_message(message.chat.id, bandejaoDescription, reply_markup=bandejaoButtons)
+
+# Cardapio
+@bot.message_handler(commands=["bCardapio"])
+def dietMenu(message):
+    dietMenuDescription = """
+\- /bTradicional: Cardápio tradicional
+
+\- /bVegano: Cardápio vegano
+"""
+
+    dietButtons = ReplyKeyboardMarkup(resize_keyboard=True)
+    dietButtons.add(KeyboardButton('/bTradicional'))
+    dietButtons.add(KeyboardButton('/bVegano'))
+
+    bot.reply_to(message, 'Ta bom\! Qual cardápio deseja ver?')
+    bot.send_message(message.chat.id, dietMenuDescription, reply_markup=dietButtons)
+
+
+
+
+
+# Funcionalidades
+
+
+
+
+@bot.message_handler(commands=["onibusProx"]) # funciona quando recebe o comando "onibus"
 def onibus(mensagem):
 
     existeOnibusIda = existeOnibusVolta = True
@@ -67,7 +173,7 @@ def onibus(mensagem):
         else:
             output_ProxOnibusIda = f'{horarioOnibusIda} ({diffHorariosIda.minute} min(s))'
     else:
-        output_ProxOnibusIda = 'acabaram os ônibus de hoje!'
+        output_ProxOnibusIda = 'acabaram os ônibus de hoje\!'
 
     if existeOnibusVolta == True:
         if diffHorariosVolta.hour > 0:
@@ -75,7 +181,7 @@ def onibus(mensagem):
         else:
             output_ProxOnibusVolta = f'{horarioOnibusVolta} ({diffHorariosVolta.minute} min(s))'
     else:
-        output_ProxOnibusVolta = 'acabaram os ônibus de hoje!'
+        output_ProxOnibusVolta = 'acabaram os ônibus de hoje\!'
 
     # Envio da mensagem no chat
     bot.send_message(mensagem.chat.id,
@@ -109,20 +215,22 @@ Horário atual: {horaAtual_formated}
 {printLocalidades(diaAtual, horaAtual, horaAtual_time)}    
 """)
 
-def verificar(mensagem): # Checa a mensagem do usuário e retorna True (vale para qualquer mensagem)
+
+def verify(mensagem): # Checa a chegada de uma mensagem qualquer
     return True
 
-# Função que manda o Menu independentemente da mensagem do usuário
-@bot.message_handler(func=verificar)
-def responder(mensagem):
-    menu = """
-    Qual função gostaria de acessar? (Clique no item):
- 🚌 · /onibus - Ver horário do próximo ônibus
- 🍽️ · /bandejao - Ver horário da próxima refeição
-    Responder qualquer coisa não funcionará. Clique em uma das opções.
-    """
+"""
+Essa função deve ser a última de todas, porque ela é ativada para QUALQUER mensagem enviada que não tenha caído das funções acima.
+"""
 
-    bot.reply_to(mensagem, f'👋 Olá, {mensagem.chat.first_name}! Como vai?')
-    bot.send_message(mensagem.chat.id, menu)
+# Caso o usuário envie um comando desconhecido
+@bot.message_handler(func=verify)
+def unknownCommand(message):
+
+    helpButton = ReplyKeyboardMarkup(resize_keyboard=True)
+    helpButton.add(KeyboardButton('/help'))
+
+    bot.reply_to(message, 'Hmmm, eu não conheço esse comando\.') 
+    bot.send_message(message.chat.id, 'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
 
 bot.polling() # Vai checar a mensagem recebida pelo bot
