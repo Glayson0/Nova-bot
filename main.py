@@ -3,6 +3,7 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
 from localidadesBandejao import *
 from timeUtils import *
+from bus import *
 
 # Inicialização do bot
 ## add access link to the bot here: [https://t.me/unicampus_bot]
@@ -118,6 +119,8 @@ def bCardapio(message):
 
 #### Funcionalidades
 
+
+
 ## Ônibus
 
 # oTodos
@@ -126,13 +129,15 @@ def oTodos(mensagem):
     bot.send_message(mensagem.chat.id, 'Aqui está a foto com todos os horários dos ônibus da moradia:')
     bot.send_photo(mensagem.chat.id, 'https://i.pinimg.com/736x/8f/72/57/8f7257a0d878b4ce78543183ace8acf1.jpg')
 
-@bot.message_handler(commands=["onibusProx"]) # funciona quando recebe o comando "onibus"
-def onibus(mensagem):
-
-    existeOnibusIda = existeOnibusVolta = True
+# oProx
+@bot.message_handler(commands=["oProx"])
+def oProx(mensagem):
 
     horaAtual = datetime.fromtimestamp(mensagem.date)
     diaAtual = getCurrentDay(mensagem)
+    
+    existeOnibusIda = existeOnibusVolta = True
+
 
     # DIA ÚTIL
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
