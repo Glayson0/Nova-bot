@@ -136,7 +136,9 @@ def oProx(message):
     horaAtual = datetime.fromtimestamp(message.date)
     diaAtual = getCurrentDay(message)
 
-    horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2 = nextBus(horaAtual, diaAtual)
+    horarioOnibusIda1, horarioOnibusVolta1 = nextBus(horaAtual, diaAtual)
+
+    horarioOnibusIda2, horarioOnibusVolta2 = nextBusFromBus(horarioOnibusIda1, horarioOnibusVolta1, diaAtual)
 
 
     ## Diferença de tempo
@@ -206,6 +208,56 @@ Volta \(Unicamp \-\> Moradia\):
     # Envio da mensagem no chat
     bot.reply_to(message, "Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
     bot.send_message(message.chat.id, proxOnibus)
+
+# oTodosIda
+@bot.message_handler(commands=["oTodosIda"])
+def oTodosIda(message):
+    
+    horaAtual = datetime.fromtimestamp(message.date)
+    diaAtual = getCurrentDay(message)
+
+    proxOnibus = nextBus(horaAtual, diaAtual, 0)
+
+    # Lista com todos os horários de Ida
+
+    pos = 0
+
+    horariosIda = ""
+
+    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+        for horario in diaUtil_horariosIda:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                horariosIda += f'{pos}\) ~{horario}~\n'
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                horariosIda += f'{pos}\) *{proxOnibus}*\n'
+            
+            else:
+                pos += 1
+                horariosIda += f'{pos}\) {horario}\n'
+    
+    else:
+
+        for horario in diaInutil_horariosIda:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                horariosIda += f'~{pos}\) {horario}~\n'
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                horariosIda += f'{pos}\) *{proxOnibus}*\n'
+            
+            else:
+                pos += 1
+                horariosIda += f'{pos}\) {horario}\n'
+
+    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.send_message(message.chat.id, horariosIda)
 
 ########### Resposta à opção "/bandejao"
 @bot.message_handler(commands=["bandejao"]) # funciona quando recebe o comando "bandejao"

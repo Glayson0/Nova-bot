@@ -23,68 +23,50 @@ diaInutil_horariosVolta = ['07:20', '07:30', '07:40', '07:50', '08:00', '08:10',
                         '11:50', '12:00', '12:10', '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', '13:30', 
                         '13:40', '13:50', '14:00', '17:40', '17:50', '18:00', '18:10', '18:20', '18:30', '18:40', '18:50', '19:00']
 
-def nextBus(horaAtual, diaAtual):
-
-    existeOnibusIda = existeOnibusVolta = True
+def nextBus(horaAtual, diaAtual, percurso=2):
 
     # DIA ÚTIL
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
         # Condição para enquanto tiver ônibus no dia
         if horaAtual < fStrToTime(diaUtil_horariosIda[-1]):
-            # Encontrar próximos ônibus
             for horarioOnibusIda in diaUtil_horariosIda:
                 if horaAtual <= fStrToTime(horarioOnibusIda):
-                    horarioOnibusIda1 = horarioOnibusIda
-                    if horarioOnibusIda1 != diaUtil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda1) + 1]
-                    else:
-                        horarioOnibusIda2 = None
                     break
         else:
-            horarioOnibusIda1 = horarioOnibusIda2 = None
+            horarioOnibusIda = None
 
         if horaAtual < fStrToTime(diaUtil_horariosVolta[-1]):
             for horarioOnibusVolta in diaUtil_horariosVolta:
                 if horaAtual <= fStrToTime(horarioOnibusVolta):
-                    horarioOnibusVolta1 = horarioOnibusVolta
-                    if horarioOnibusVolta1 != diaUtil_horariosVolta[-1]:
-                        horarioOnibusVolta2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusVolta1) + 1]
-                    else:
-                        horarioOnibusVolta2 = None
                     break
         else:
-            horarioOnibusVolta1 = horarioOnibusVolta2 = None
+            horarioOnibusVolta = None
         
     # DIA INUTIL
     else:
         # Condição para enquanto tiver ônibus no dia
         if horaAtual < fStrToTime(diaInutil_horariosIda[-1]):
-            # Encontrar próximos ônibus
+
             for horarioOnibusIda in diaInutil_horariosIda:
                 if horaAtual <= fStrToTime(horarioOnibusIda):
-                    horarioOnibusIda1 = horarioOnibusIda
-                    if horarioOnibusIda1 != diaInutil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda1) + 1]
-                    else:
-                        horarioOnibusIda2 = None
                     break
         else:
-            horarioOnibusIda1 = horarioOnibusIda2 = None
+            horarioOnibusIda = None
 
         if horaAtual < fStrToTime(diaInutil_horariosVolta[-1]):
             for horarioOnibusVolta in diaInutil_horariosVolta:
                 if horaAtual <= fStrToTime(horarioOnibusVolta):
-                    horarioOnibusVolta1 = horarioOnibusVolta
-                    if horarioOnibusVolta1 != diaInutil_horariosVolta[-1]:
-                        horarioOnibusVolta2 = diaInutil_horariosVolta[diaInutil_horariosVolta.index(horarioOnibusVolta1) + 1]
-                    else:
-                        horarioOnibusVolta2 = None
                     break
         else:
-            horarioOnibusVolta1 = horarioOnibusVolta2 = None
+            horarioOnibusVolta = None
     
-    return horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2
+    if percurso == 0:
+        return horarioOnibusIda
+    elif percurso == 1:
+        return horarioOnibusVolta
+    else:
+        return horarioOnibusIda, horarioOnibusVolta
 
 def formatingBusDiffTime(time, diffTime):
     if time != None:
@@ -92,3 +74,34 @@ def formatingBusDiffTime(time, diffTime):
             return f'{diffTime.hour} hr e {diffTime.minute} min'
         else:
             return f'{diffTime.minute} min'
+
+def nextBusFromBus(horarioOnibusIda, horarioOnibusVolta, diaAtual):
+
+    # DIA ÚTIL
+    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+        if horarioOnibusIda != diaUtil_horariosIda[-1]:
+            horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda) + 1]
+        else:
+            horarioOnibusIda2 = None
+    
+        if horarioOnibusVolta != diaUtil_horariosVolta[-1]:
+            horarioOnibusVolta2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusVolta) + 1]
+        else:
+            horarioOnibusVolta2 = None
+
+
+    else:
+
+        if horarioOnibusIda != diaInutil_horariosIda[-1]:
+            horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda) + 1]
+        else:
+            horarioOnibusIda2 = None
+    
+        if horarioOnibusVolta != diaInutil_horariosVolta[-1]:
+            horarioOnibusVolta2 = diaInutil_horariosVolta[diaInutil_horariosVolta.index(horarioOnibusVolta) + 1]
+        else:
+            horarioOnibusVolta2 = None
+
+    return horarioOnibusIda2, horarioOnibusVolta2
+    
