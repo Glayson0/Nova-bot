@@ -52,6 +52,15 @@ def getCurrentDay(mensagem):
     
     return dia_atual
 
+def convertToInt(time):
+    time = str(time)
+    if time[0] == 0:
+        del time[0]
+    return int(time.replace(':',''))
+
+def convertToString(datetime):
+    return datetime.strftime('%H:%M')
+
 def format_time(time_str):
     ## Not working that well.
     ## I don't recommend using this function
@@ -70,20 +79,16 @@ def format_time(time_str):
 
 def getTimeDifference(h1, h2):
     if h1 > h2:
+        h2 = datetime.strptime(str(h2), '%H%M')
+        h1 = datetime.strptime(str(h1), '%H%M')
         h2 += timedelta(days=1)
         until_h2 = h2 - h1
-        return until_h2
+        until_h2 = datetime.strftime(until_h2)
+        leftTime = convertToInt(until_h2)
+        return f'{leftTime[:2]} horas e {leftTime[4:]} minutos'
     if h1 == h2:
         return '00:00'
     if h1 < h2:
         return timedelta(hours=h2 // 100, minutes=h2 % 100) - timedelta(hours=h1 // 100, minutes=h1 % 100)
-    
-def convertToInt(time):
-    time = str(time)
-    if time[0] == 0:
-        del time[0]
-    return int(time.replace(':',''))
 
-def convertToString(datetime):
-    return datetime.strftime('%H:%M')
 
