@@ -37,7 +37,7 @@ def nextBus(horaAtual, diaAtual):
                 if horaAtual <= fStrToTime(horarioOnibusIda):
                     horarioOnibusIda1 = horarioOnibusIda
                     if horarioOnibusIda1 != diaUtil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda1) + 1]
+                        horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda1) + 1]
                     else:
                         horarioOnibusIda2 = None
                     break
