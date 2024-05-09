@@ -220,25 +220,36 @@ def oTodosIda(message):
 
     # Lista com todos os horários de Ida
 
-    pos = 0
-
     horariosIda = ""
 
+    pos = 0
+
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+
 
         for horario in diaUtil_horariosIda:
 
             if fStrToTime(horario) < fStrToTime(proxOnibus):
                 pos += 1
-                horariosIda += f'{pos}\) ~{horario}~\n'
+                if pos % 3 == 0:
+                    horariosIda += f'~{horario}~\n'
+                else:
+                    horariosIda += f'~{horario}~  \|  '
             
             elif fStrToTime(horario) == fStrToTime(proxOnibus):
                 pos += 1
-                horariosIda += f'{pos}\) *{proxOnibus}*\n'
+                if pos % 3 == 0:
+                    horariosIda += f'*{proxOnibus}*\n'
+                else:
+                    horariosIda += f'*{proxOnibus}*  \|  '
             
             else:
                 pos += 1
-                horariosIda += f'{pos}\) {horario}\n'
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}\n'
+                else:
+                    horariosIda += f'{horario}  \|  '
     
     else:
 
@@ -246,15 +257,24 @@ def oTodosIda(message):
 
             if fStrToTime(horario) < fStrToTime(proxOnibus):
                 pos += 1
-                horariosIda += f'~{pos}\) {horario}~\n'
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}~\n'
+                else:
+                    horarioIda += f'~{horario}~  \|  '
             
             elif fStrToTime(horario) == fStrToTime(proxOnibus):
                 pos += 1
-                horariosIda += f'{pos}\) *{proxOnibus}*\n'
+                if pos % 3 == 0:
+                    horariosIda += f'*{proxOnibus}*\n'
+                else:
+                    horariosIda += f'*{proxOnibus}*  \|  '
             
             else:
                 pos += 1
-                horariosIda += f'{pos}\) {horario}\n'
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}\n'
+                else:
+                    horariosIda += f'{horario}  \|  '
 
     bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, horariosIda)
