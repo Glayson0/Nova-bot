@@ -53,20 +53,20 @@ def help(message):
 @bot.message_handler(commands=["onibus"])
 def onibus(message):
     onibusDescription = """
+\- /oProx: Ver os próximos 2 ônibus de ida e de volta
+
 \- /oTodos: Ver foto com todos os horários de ônibus
 
 \- /oTodosIda: Ver todos os horários de ônibus de IDA do dia \(Moradia \-\> Unicamp\)
 
 \- /oTodosVolta: Ver todos os horários de ônibus de VOLTA dia \(Unicamp \-\> Moradia\)
-
-\- /oProx: Ver os próximos 2 ônibus de ida e de volta
 """
     busButtons = ReplyKeyboardMarkup(resize_keyboard=True)
 
+    busButtons.add(KeyboardButton('/oProx'))
     busButtons.add(KeyboardButton('/oTodos'))
     busButtons.add(KeyboardButton('/oTodosIda'))
     busButtons.add(KeyboardButton('/oTodosVolta'))
-    busButtons.add(KeyboardButton('/oTodosProx'))
 
     bot.reply_to(message, 'Okay\! Aqui estão os comandos para os ônibus da moradia:')
     bot.send_message(message.chat.id, onibusDescription, reply_markup=busButtons)
@@ -131,84 +131,81 @@ def oTodos(mensagem):
 
 # oProx
 @bot.message_handler(commands=["oProx"])
-def oProx(mensagem):
+def oProx(message):
 
-    horaAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    horaAtual = datetime.fromtimestamp(message.date)
+    diaAtual = getCurrentDay(message)
+
+    horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2 = nextBus(horaAtual, diaAtual)
+
+
+    ## Diferença de tempo
+
+    # Ida
+    if horarioOnibusIda1 != None:
+        diffHorariosIda1 = getTimeDifference2(horarioOnibusIda1, horaAtual)
+    else:
+        diffHorariosIda1 = None
+
+    if horarioOnibusIda2 != None:
+        diffHorariosIda2 = getTimeDifference2(horarioOnibusIda2, horaAtual)
+    else:
+        diffHorariosIda2 = None
     
-    existeOnibusIda = existeOnibusVolta = True
+    # Volta
+    if horarioOnibusVolta1 != None:
+        diffHorariosVolta1 = getTimeDifference2(horarioOnibusVolta1, horaAtual)
+    else:
+        diffHorariosVolta1 = None
 
+    if horarioOnibusVolta2 != None:
+        diffHorariosVolta2 = getTimeDifference2(horarioOnibusVolta2, horaAtual)
+    else:
+        diffHorariosVolta2 = None
 
-    # DIA ÚTIL
-    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
-
-        # Condição para quando não tiver mais ônibus no dia
-        if horaAtual > fStrToTime(diaUtil_horariosIda[-1]):
-            existeOnibusIda = False
-
-        if horaAtual > fStrToTime(diaUtil_horariosVolta[-1]):
-            existeOnibusVolta = False
-
-        # Encontrar próximos ônibus
-        for horarioOnibusIda in diaUtil_horariosIda:
-            if horaAtual <= fStrToTime(horarioOnibusIda):
-                break
-        for horarioOnibusVolta in diaUtil_horariosVolta:
-            if horaAtual <= fStrToTime(horarioOnibusVolta):
-                break
+    ## Output
+    # Ida
+    tempo_ProxOnibusIda1 = formatingBusDiffTime(horarioOnibusIda1, diffHorariosIda1)
+    tempo_ProxOnibusIda2 = formatingBusDiffTime(horarioOnibusIda2, diffHorariosIda2)
     
-    # FIM DE SEMANA
+    # Volta
+    tempo_ProxOnibusVolta1 = formatingBusDiffTime(horarioOnibusVolta1, diffHorariosVolta1)
+    tempo_ProxOnibusVolta2 = formatingBusDiffTime(horarioOnibusVolta2, diffHorariosVolta2)
+
+    # Mensagem onibus Ida
+    if horarioOnibusIda1 == None:
+        output_ProxOnibusIda1 = f"""Acabaram os ônibus por hoje"""
     else:
-        # Condição para quando não tiver mais ônibus de IDA no dia
-        if horaAtual > fStrToTime(diaInutil_horariosIda[-1]):
-            existeOnibusIda = False
-        else:
-            # Encontrar próximos ônibus
-            for horarioOnibusIda in diaInutil_horariosIda:
-                if horaAtual <= fStrToTime(horarioOnibusIda):
-                    break
+        output_ProxOnibusIda1 = f"""{horarioOnibusIda1} \({tempo_ProxOnibusIda1}\)"""
 
-        # Condição para quando não tiver mais ônibus de VOLTA no dia
-        if horaAtual > fStrToTime(diaInutil_horariosVolta[-1]):
-            existeOnibusVolta = False
-        else:
-            for horarioOnibusVolta in diaInutil_horariosVolta:
-                    if horaAtual <= fStrToTime(horarioOnibusVolta):
-                        break
-
-    # Calculando a diferença de tempo
-    if existeOnibusIda == True:
-        diffHorariosIda = getTimeDifference2(horarioOnibusIda, horaAtual)
-    if existeOnibusVolta == True:
-        diffHorariosVolta = getTimeDifference2(horarioOnibusVolta, horaAtual)
-
-    # Output
-    if existeOnibusIda == True:
-        if diffHorariosIda.hour > 0:
-            output_ProxOnibusIda = f'{horarioOnibusIda} ({diffHorariosIda.hour} hr e {diffHorariosIda.minute} min)'
-        else:
-            output_ProxOnibusIda = f'{horarioOnibusIda} ({diffHorariosIda.minute} min(s))'
+    if horarioOnibusIda2 == None:
+        output_ProxOnibusIda2 = f"""Acabaram os ônibus por hoje"""
     else:
-        output_ProxOnibusIda = 'acabaram os ônibus de hoje\!'
-
-    if existeOnibusVolta == True:
-        if diffHorariosVolta.hour > 0:
-            output_ProxOnibusVolta = f'{horarioOnibusVolta} ({diffHorariosVolta.hour} hr e {diffHorariosVolta.minute} min)'
-        else:
-            output_ProxOnibusVolta = f'{horarioOnibusVolta} ({diffHorariosVolta.minute} min(s))'
+        output_ProxOnibusIda2 = f"""{horarioOnibusIda2} \({tempo_ProxOnibusIda2}\)"""
+        
+    # Mensagem onibus Volta
+    if horarioOnibusVolta1 == None:
+        output_ProxOnibusVolta1 = f"""Acabaram os ônibus por hoje"""
     else:
-        output_ProxOnibusVolta = 'acabaram os ônibus de hoje\!'
+        output_ProxOnibusVolta1 = f"""{horarioOnibusVolta1} \({tempo_ProxOnibusVolta1}\)"""
 
+    if horarioOnibusVolta2 == None:
+        output_ProxOnibusVolta2 = f"""Acabaram os ônibus por hoje"""
+    else:
+        output_ProxOnibusVolta2 = f"""{horarioOnibusVolta2} \({tempo_ProxOnibusVolta2}\)"""
+
+    proxOnibus = f"""
+Ida \(Moradia \-\> Unicamp\):
+01\) {output_ProxOnibusIda1}
+02\) {output_ProxOnibusIda2}
+
+Volta \(Unicamp \-\> Moradia\):
+01\) {output_ProxOnibusVolta1}
+02\) {output_ProxOnibusVolta2}
+"""
     # Envio da mensagem no chat
-    bot.send_message(mensagem.chat.id,
-    f"""🚌🚌🚌 HORÁRIO ÔNIBUS 🚌🚌🚌
-
-Dia atual: {diaAtual}
-Horário atual: {fTimeToStr(horaAtual)}
-    
-Próximo ônibus IDA: {output_ProxOnibusIda}
-Próximo ônibus VOLTA: {output_ProxOnibusVolta}"""
-    )
+    bot.reply_to(message, "Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
+    bot.send_message(message.chat.id, proxOnibus)
 
 ########### Resposta à opção "/bandejao"
 @bot.message_handler(commands=["bandejao"]) # funciona quando recebe o comando "bandejao"

@@ -30,40 +30,65 @@ def nextBus(horaAtual, diaAtual):
     # DIA ÚTIL
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        # Condição para quando não tiver mais ônibus no dia
-        if horaAtual > fStrToTime(diaUtil_horariosIda[-1]):
-            existeOnibusIda = False
-
-        if horaAtual > fStrToTime(diaUtil_horariosVolta[-1]):
-            existeOnibusVolta = False
-
-        # Encontrar próximos ônibus
-        for horarioOnibusIda in diaUtil_horariosIda:
-            if horaAtual <= fStrToTime(horarioOnibusIda):
-                horarioOnibusIda1 = horarioOnibusIda
-                horarioOnibusIda2 = diaInutil_horariosIda.index(horarioOnibusIda1+1)
-                break
-        for horarioOnibusVolta in diaUtil_horariosVolta:
-            if horaAtual <= fStrToTime(horarioOnibusVolta):
-                break
-
-        return horarioOnibusIda, horarioOnibusVolta
-    
-    # FIM DE SEMANA
-    else:
-        # Condição para quando não tiver mais ônibus de IDA no dia
-        if horaAtual > fStrToTime(diaInutil_horariosIda[-1]):
-            existeOnibusIda = False
+        # Condição para enquanto tiver ônibus no dia
+        if horaAtual < fStrToTime(diaUtil_horariosIda[-1]):
+            # Encontrar próximos ônibus
+            for horarioOnibusIda in diaUtil_horariosIda:
+                if horaAtual <= fStrToTime(horarioOnibusIda):
+                    horarioOnibusIda1 = horarioOnibusIda
+                    if horarioOnibusIda1 != diaUtil_horariosIda[-1]:
+                        horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda1) + 1]
+                    else:
+                        horarioOnibusIda2 = None
+                    break
         else:
+            horarioOnibusIda1 = horarioOnibusIda2 = None
+
+        if horaAtual < fStrToTime(diaUtil_horariosVolta[-1]):
+            for horarioOnibusVolta in diaUtil_horariosVolta:
+                if horaAtual <= fStrToTime(horarioOnibusVolta):
+                    horarioOnibusVolta1 = horarioOnibusVolta
+                    if horarioOnibusVolta1 != diaUtil_horariosVolta[-1]:
+                        horarioOnibusVolta2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusVolta1) + 1]
+                    else:
+                        horarioOnibusVolta2 = None
+                    break
+        else:
+            horarioOnibusVolta1 = horarioOnibusVolta2 = None
+        
+    # DIA INUTIL
+    else:
+        # Condição para enquanto tiver ônibus no dia
+        if horaAtual < fStrToTime(diaInutil_horariosIda[-1]):
             # Encontrar próximos ônibus
             for horarioOnibusIda in diaInutil_horariosIda:
                 if horaAtual <= fStrToTime(horarioOnibusIda):
+                    horarioOnibusIda1 = horarioOnibusIda
+                    if horarioOnibusIda1 != diaInutil_horariosIda[-1]:
+                        horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda1) + 1]
+                    else:
+                        horarioOnibusIda2 = None
                     break
-
-        # Condição para quando não tiver mais ônibus de VOLTA no dia
-        if horaAtual > fStrToTime(diaInutil_horariosVolta[-1]):
-            existeOnibusVolta = False
         else:
+            horarioOnibusIda1 = horarioOnibusIda2 = None
+
+        if horaAtual < fStrToTime(diaInutil_horariosVolta[-1]):
             for horarioOnibusVolta in diaInutil_horariosVolta:
-                    if horaAtual <= fStrToTime(horarioOnibusVolta):
-                        break
+                if horaAtual <= fStrToTime(horarioOnibusVolta):
+                    horarioOnibusVolta1 = horarioOnibusVolta
+                    if horarioOnibusVolta1 != diaInutil_horariosVolta[-1]:
+                        horarioOnibusVolta2 = diaInutil_horariosVolta[diaInutil_horariosVolta.index(horarioOnibusVolta1) + 1]
+                    else:
+                        horarioOnibusVolta2 = None
+                    break
+        else:
+            horarioOnibusVolta1 = horarioOnibusVolta2 = None
+    
+    return horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2
+
+def formatingBusDiffTime(time, diffTime):
+    if time != None:
+        if diffTime.hour > 0:
+            return f'{diffTime.hour} hr e {diffTime.minute} min'
+        else:
+            return f'{diffTime.minute} min'
