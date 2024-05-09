@@ -226,8 +226,6 @@ def oTodosIda(message):
 
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-
-
         for horario in diaUtil_horariosIda:
 
             if fStrToTime(horario) < fStrToTime(proxOnibus):
@@ -278,6 +276,74 @@ def oTodosIda(message):
 
     bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, horariosIda)
+
+# oTodosVolta
+@bot.message_handler(commands=["oTodosVolta"])
+def oTodosVolta(message):
+    
+    horaAtual = datetime.fromtimestamp(message.date)
+    diaAtual = getCurrentDay(message)
+
+    proxOnibus = nextBus(horaAtual, diaAtual, 1)
+
+    # Lista com todos os horários de Ida
+
+    horariosVolta = ""
+
+    pos = 0
+
+    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+        for horario in diaUtil_horariosVolta:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'~{horario}~\n'
+                else:
+                    horariosVolta += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'*{proxOnibus}*\n'
+                else:
+                    horariosVolta += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}\n'
+                else:
+                    horariosVolta += f'{horario}  \|  '
+    
+    else:
+
+        for horario in diaInutil_horariosVolta:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}~\n'
+                else:
+                    horarioIda += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'*{proxOnibus}*\n'
+                else:
+                    horariosVolta += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}\n'
+                else:
+                    horariosVolta += f'{horario}  \|  '
+
+    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.send_message(message.chat.id, horariosVolta)
 
 ########### Resposta à opção "/bandejao"
 @bot.message_handler(commands=["bandejao"]) # funciona quando recebe o comando "bandejao"
