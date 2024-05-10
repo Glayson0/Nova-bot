@@ -25,9 +25,10 @@ com o mesmo trigger, apenas aquela que está mais acima será ativada.
 # Comando /start
 @bot.message_handler(commands=["start"]) # Atribuição do comando /start à função
 def start(mensagem):
+
     """
     Essa função
-    - envia uma mensagem de introdução ao bot, indicando o usuário a utilizar o comando /help.
+    - envia uma mensagem de introdução ao bot no chat, indicando o usuário a utilizar o comando /help.
     """
 
     # Texto da mensagem do bot
@@ -51,9 +52,10 @@ Clique no botão abaixo ou digite /help para conhecer alguns dos comandos que vo
 # Comando /help
 @bot.message_handler(commands=["help"])  # Atribuição do comando /help à função
 def help(mensagem):
+
     """
     Essa função
-    - envia uma mensagem com 3 comandos principais para ajudar o usuário.
+    - envia uma mensagem no chat com 3 comandos principais para ajudar o usuário.
     """
 
     # Texto da mensagem do bot
@@ -79,9 +81,10 @@ def help(mensagem):
 # Comando /onibus
 @bot.message_handler(commands=["onibus"]) # Atribuição do comando /ônibus à função
 def onibus(mensagem):
+
     """
     Essa função
-    - envia uma mensagem listando todos os comandos relacionados com os ônibus da moradia.
+    - envia uma mensagem no chat listando todos os comandos relacionados com os ônibus da moradia.
     """
 
     # Texto da mensagem do bot
@@ -109,9 +112,10 @@ def onibus(mensagem):
 # Comando /bandejão
 @bot.message_handler(commands=["bandejao"]) # Atribuição do comando /bandejao à função
 def bandejao(mensagem):
+
     """
     Essa função
-    - envia uma mensagem listando todos os comandos relacionados com os restaurantes da Unicamp.
+    - envia uma mensagem no chat listando todos os comandos relacionados com os restaurantes da Unicamp.
     """
 
     # Texdo da mensagem do bot
@@ -143,8 +147,9 @@ Restaurantes
 # Comando /bCardapio
 @bot.message_handler(commands=["bCardapio"]) # Atribuição do comando /bCardapio à função
 def bCardapio(mensagem):
+
     """
-    Essa função envia uma mensagem com as opções de cardápio (Tradicional e Vegano) para o usuário escolher.
+    Essa função envia uma mensagem no chat com as opções de cardápio (Tradicional e Vegano) para o usuário escolher.
     """
     
     # Texto da mensagem do bot
@@ -173,6 +178,7 @@ def bCardapio(mensagem):
 # Comando /oTodos
 @bot.message_handler(commands=["oTodos"]) # Atribuição do comando /oTodos à função
 def oTodos(mensagem):
+
     """
     Essa função envia uma foto no chat da tabela de horários dos ônibus da moradia
     """
@@ -204,8 +210,7 @@ def oProx(mensagem):
 
 
     ## Diferença de tempo
-
-    # Ida
+        # Ida
     if horarioOnibusIda1 != None:
         diffHorariosIda1 = getTimeDifference2(horarioOnibusIda1, horaAtual)
     else:
@@ -215,8 +220,8 @@ def oProx(mensagem):
         diffHorariosIda2 = getTimeDifference2(horarioOnibusIda2, horaAtual)
     else:
         diffHorariosIda2 = None
-    
-    # Volta
+
+        # Volta
     if horarioOnibusVolta1 != None:
         diffHorariosVolta1 = getTimeDifference2(horarioOnibusVolta1, horaAtual)
     else:
@@ -228,17 +233,15 @@ def oProx(mensagem):
         diffHorariosVolta2 = None
 
     ## Texto de tempo faltante para cada ônibus
-    # Ida
+        # Ida
     tempo_ProxOnibusIda1 = formatingBusDiffTime(horarioOnibusIda1, diffHorariosIda1)
     tempo_ProxOnibusIda2 = formatingBusDiffTime(horarioOnibusIda2, diffHorariosIda2)
-    
-    # Volta
+        # Volta
     tempo_ProxOnibusVolta1 = formatingBusDiffTime(horarioOnibusVolta1, diffHorariosVolta1)
     tempo_ProxOnibusVolta2 = formatingBusDiffTime(horarioOnibusVolta2, diffHorariosVolta2)
 
     ##  Texto do horário de cada ônibus
-
-    # Ida
+        # Ida
     if horarioOnibusIda1 == None:
         output_ProxOnibusIda1 = f"""Acabaram os ônibus por hoje"""
     else:
@@ -248,8 +251,7 @@ def oProx(mensagem):
         output_ProxOnibusIda2 = f"""Acabaram os ônibus por hoje"""
     else:
         output_ProxOnibusIda2 = f"""{horarioOnibusIda2} \({tempo_ProxOnibusIda2}\)"""
-        
-    # Volta
+        # Volta
     if horarioOnibusVolta1 == None:
         output_ProxOnibusVolta1 = f"""Acabaram os ônibus por hoje"""
     else:
@@ -275,38 +277,52 @@ Volta \(Unicamp \-\> Moradia\):
     bot.send_message(mensagem.chat.id, proxOnibus)
 
 # oTodosIda
-@bot.message_handler(commands=["oTodosIda"])
+@bot.message_handler(commands=["oTodosIda"]) # Atribuição do comando /oTodosIda à função
 def oTodosIda(message):
+
+    """
+    Essa função envia uma mensagem no chat com uma lista de 3 colunas com
+        - os horários de ônibus de Ida que já passaram tachados
+        - o horário do próximo ônibus de Ida em negrito
+        - os horários de ônibus de Ida que ainda não passaram
+    """
     
+    # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(message.date)
     diaAtual = getCurrentDay(message)
 
+    # Obtenção do horário do próximo ônibus
     proxOnibus = nextBus(horaAtual, diaAtual, 0)
 
-    # Lista com todos os horários de Ida
-
-    horariosIda = ""
+    ### Lista com todos os horários de Ida
 
     pos = 0
 
+    ## Texto da mensagem do bot
+    horariosIda = ""
+
+    # Dia útil
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        for horario in diaUtil_horariosIda:
+        for horario in diaUtil_horariosVolta:
 
-            if fStrToTime(horario) < fStrToTime(proxOnibus):
+            # Ônibus que já passaram
+            if strToTime(horario) < strToTime(proxOnibus): 
                 pos += 1
                 if pos % 3 == 0:
                     horariosIda += f'~{horario}~\n'
                 else:
                     horariosIda += f'~{horario}~  \|  '
             
-            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+            # Próximo ônibus
+            elif strToTime(horario) == strToTime(proxOnibus):
                 pos += 1
                 if pos % 3 == 0:
                     horariosIda += f'*{proxOnibus}*\n'
                 else:
                     horariosIda += f'*{proxOnibus}*  \|  '
             
+            # Ônibus que ainda não passaram
             else:
                 pos += 1
                 if pos % 3 == 0:
@@ -314,24 +330,28 @@ def oTodosIda(message):
                 else:
                     horariosIda += f'{horario}  \|  '
     
+    # Dia não-útil
     else:
 
-        for horario in diaInutil_horariosIda:
+        for horario in diaNaoUtil_horariosIda:
 
-            if fStrToTime(horario) < fStrToTime(proxOnibus):
+            # Ônibus que já passaram
+            if strToTime(horario) < strToTime(proxOnibus): 
                 pos += 1
                 if pos % 3 == 0:
-                    horariosIda += f'{horario}~\n'
+                    horariosIda += f'~{horario}~\n'
                 else:
-                    horarioIda += f'~{horario}~  \|  '
+                    horariosIda += f'~{horario}~  \|  '
             
-            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+            # Próximo ônibus
+            elif strToTime(horario) == strToTime(proxOnibus):
                 pos += 1
                 if pos % 3 == 0:
                     horariosIda += f'*{proxOnibus}*\n'
                 else:
                     horariosIda += f'*{proxOnibus}*  \|  '
             
+            # Ônibus que ainda não passaram
             else:
                 pos += 1
                 if pos % 3 == 0:
@@ -339,42 +359,57 @@ def oTodosIda(message):
                 else:
                     horariosIda += f'{horario}  \|  '
 
+    # Envio de mensagem
     bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, horariosIda)
 
 # oTodosVolta
-@bot.message_handler(commands=["oTodosVolta"])
+@bot.message_handler(commands=["oTodosVolta"]) # Atribuição do comando /oTodosVolta à função
 def oTodosVolta(message):
+
+    """
+    Essa função envia uma mensagem no chat com uma lista de 3 colunas com
+        - os horários de ônibus de Volta que já passaram tachados
+        - o horário do próximo ônibus de Volta em negrito
+        - os horários de ônibus de Volta que ainda não passaram
+    """
     
+    # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(message.date)
     diaAtual = getCurrentDay(message)
 
-    proxOnibus = nextBus(horaAtual, diaAtual, 1)
+    # Obtenção do horário do próximo ônibus
+    proxOnibus = nextBus(horaAtual, diaAtual, 0)
 
-    # Lista com todos os horários de Ida
-
-    horariosVolta = ""
+    ### Lista com todos os horários de Ida
 
     pos = 0
 
+    ## Texto da mensagem do bot
+    horariosVolta = ""
+
+    # Dia útil
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
         for horario in diaUtil_horariosVolta:
 
-            if fStrToTime(horario) < fStrToTime(proxOnibus):
+            # Ônibus que já passaram
+            if strToTime(horario) < strToTime(proxOnibus): 
                 pos += 1
                 if pos % 3 == 0:
                     horariosVolta += f'~{horario}~\n'
                 else:
                     horariosVolta += f'~{horario}~  \|  '
             
-            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+            # Próximo ônibus
+            elif strToTime(horario) == strToTime(proxOnibus):
                 pos += 1
                 if pos % 3 == 0:
                     horariosVolta += f'*{proxOnibus}*\n'
                 else:
                     horariosVolta += f'*{proxOnibus}*  \|  '
             
+            # Ônibus que ainda não passaram
             else:
                 pos += 1
                 if pos % 3 == 0:
@@ -382,24 +417,28 @@ def oTodosVolta(message):
                 else:
                     horariosVolta += f'{horario}  \|  '
     
+    # Dia não-útil
     else:
 
-        for horario in diaInutil_horariosVolta:
+        for horario in diaNaoUtil_horariosIda:
 
-            if fStrToTime(horario) < fStrToTime(proxOnibus):
+            # Ônibus que já passaram
+            if strToTime(horario) < strToTime(proxOnibus): 
                 pos += 1
                 if pos % 3 == 0:
-                    horariosVolta += f'{horario}~\n'
+                    horariosVolta += f'~{horario}~\n'
                 else:
-                    horarioIda += f'~{horario}~  \|  '
+                    horariosVolta += f'~{horario}~  \|  '
             
-            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+            # Próximo ônibus
+            elif strToTime(horario) == strToTime(proxOnibus):
                 pos += 1
                 if pos % 3 == 0:
                     horariosVolta += f'*{proxOnibus}*\n'
                 else:
                     horariosVolta += f'*{proxOnibus}*  \|  '
             
+            # Ônibus que ainda não passaram
             else:
                 pos += 1
                 if pos % 3 == 0:
@@ -407,12 +446,14 @@ def oTodosVolta(message):
                 else:
                     horariosVolta += f'{horario}  \|  '
 
+    # Envio de mensagem
     bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, horariosVolta)
 
 # Comando /bandejao
-@bot.message_handler(commands=["bandejao"]) # Atribuição do comando /bandejao à função
+@bot.message_handler(commands=["bHoras"]) # Atribuição do comando /bandejao à função
 def bandejao(mensagem):
+
     """
     Essa função:
     - Envia uma mensagem no chat com o 
@@ -447,7 +488,7 @@ def verify(mensagem):
 def unknownCommand(mensagem):
     """
     Essa função deve ser a última de todas, porque ela é ativada para QUALQUER mensagem.
-    Ela é encarregada de pegar todas as mensagens que não caíram nas funções anteriores.
+    Ela é responsável por pegar todas as mensagens que não caíram nas funções anteriores.
     """
 
     # Botões
@@ -458,4 +499,4 @@ def unknownCommand(mensagem):
     bot.reply_to(mensagem, 'Hmmm, eu não conheço esse comando\.') 
     bot.send_message(mensagem.chat.id, 'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
 
-bot.polling() # Vai checar a mensagem recebida pelo bot
+bot.polling()

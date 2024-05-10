@@ -6,7 +6,7 @@ Listas com horários de ônibus em string dos dias úteis e não-úteis.
 """
 
 # Dia útil
-diaUtil_horariosIda = ['06:30', '06:45', '06:50', '07:00', '07:10', '07:15', '07:20', '07:25', '07:35', '07:40', '07:45', '08:00', '08:10', '08:20',
+diaUtil_horariosVolta = ['06:30', '06:45', '06:50', '07:00', '07:10', '07:15', '07:20', '07:25', '07:35', '07:40', '07:45', '08:00', '08:10', '08:20',
     '08:30', '08:40', '08:50', '09:00', '09:10', '09:20', '09:30', '09:40', '09:45', '10:05', '10:15', '10:30','10:45', '11:00',
     '11:20', '11:30', '11:45', '12:00', '12:15', '12:20', '12:35', '12:45', '13:00', '13:05', '13:20', '13:30', '13:45', '14:00',
     '14:15', '14:30', '14:45', '15:00', '15:15', '15:30', '15:45', '16:00', '16:15', '16:30', '16:45', '17:00', '17:30', '17:45',
@@ -49,23 +49,23 @@ def nextBus(horaAtual, diaAtual, percurso=2):
     # Ida
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        if horaAtual < fStrToTime(diaUtil_horariosIda[-1]): # Checagem se ainda há ônibus no dia
+        if horaAtual < strToTime(diaUtil_horariosVolta[-1]): # Checagem se ainda há ônibus no dia
             
-            for horarioOnibusIda in diaUtil_horariosIda:
+            for horarioOnibusIda in diaUtil_horariosVolta:
 
-                if horaAtual <= fStrToTime(horarioOnibusIda):
+                if horaAtual <= strToTime(horarioOnibusIda):
                     break
 
         else:
             horarioOnibusIda = None
 
     # Volta
-        if horaAtual < fStrToTime(diaUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
+        if horaAtual < strToTime(diaUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
 
             # Encontrar próximos ônibus
             for horarioOnibusVolta in diaUtil_horariosVolta:
 
-                if horaAtual <= fStrToTime(horarioOnibusVolta):
+                if horaAtual <= strToTime(horarioOnibusVolta):
                     break
         else:
             horarioOnibusVolta = None
@@ -75,12 +75,12 @@ def nextBus(horaAtual, diaAtual, percurso=2):
     # Ida
     else:
 
-        if horaAtual < fStrToTime(diaNaoUtil_horariosIda[-1]): # Checagem se ainda há ônibus no dia
+        if horaAtual < strToTime(diaNaoUtil_horariosIda[-1]): # Checagem se ainda há ônibus no dia
 
 
             for horarioOnibusIda in diaNaoUtil_horariosIda:
 
-                if horaAtual <= fStrToTime(horarioOnibusIda):
+                if horaAtual <= strToTime(horarioOnibusIda):
                     horarioOnibusIda1 = horarioOnibusIda
                     if horarioOnibusIda1 != diaNaoUtil_horariosIda[-1]:
                         horarioOnibusIda2 = diaNaoUtil_horariosIda[diaNaoUtil_horariosIda.index(horarioOnibusIda1) + 1] # Õnibus próximo ao próximo
@@ -90,12 +90,12 @@ def nextBus(horaAtual, diaAtual, percurso=2):
         else:
             horarioOnibusIda = None
 
-        if horaAtual < fStrToTime(diaNaoUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
+        if horaAtual < strToTime(diaNaoUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
 
             # Encontrar próximos ônibus
             for horarioOnibusVolta in diaNaoUtil_horariosVolta:
 
-                if horaAtual <= fStrToTime(horarioOnibusVolta):
+                if horaAtual <= strToTime(horarioOnibusVolta):
                     horarioOnibusVolta1 = horarioOnibusVolta
                     if horarioOnibusVolta1 != diaNaoUtil_horariosVolta[-1]:
                         horarioOnibusVolta2 = diaNaoUtil_horariosVolta[diaNaoUtil_horariosVolta.index(horarioOnibusVolta1) + 1] # Õnibus próximo ao próximo
@@ -131,8 +131,8 @@ def nextBusFromBus(horarioOnibusIda, horarioOnibusVolta, diaAtual):
     # DIA ÚTIL
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        if horarioOnibusIda != diaUtil_horariosIda[-1]:
-            horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda) + 1]
+        if horarioOnibusIda != diaUtil_horariosVolta[-1]:
+            horarioOnibusIda2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusIda) + 1]
         else:
             horarioOnibusIda2 = None
     

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 ## General time conversion
 def getCurrentDay(mensagem):
+    
     """
     Essa função
     - obtém o dia atual em string em inglês a partir do objeto mensagem
@@ -9,7 +10,7 @@ def getCurrentDay(mensagem):
     """
 
     # Obtém o dia atual
-    diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Em inglês
+    diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Inglês
 
     # Conversão para pt-br
     if diaAtual == "Monday":
@@ -36,31 +37,25 @@ def getCurrentDay(mensagem):
     return diaAtual
 
 def convertToInt(time):
+
+    """
+    Essa função
+    - converte uma variável do tipo string para o tipo inteiro
+    """
+
     time = str(time)
     if time[0] == 0:
         del time[0]
     return int(time.replace(':',''))
 
-def convertToString(datetime):
-    return datetime.strftime('%H:%M')
-
-def format_time(time_str):
-    ## Not working that well.
-    ## I don't recommend using this function
-
-    if int(time_str[2:]) >= 60:
-        hours = int(time_str[:2])
-        minutes = int(time_str[2:])
-    
-    if len(time_str) == 3:
-        time_str = f"0{hours}:{minutes}"
-    else:
-        time_str = f"{hours}:{minutes}"
-        
-    formatted_time = datetime.strptime(time_str, '%H%M').strftime('%H:%M')
-    return formatted_time
-
 def getTimeDifference(h1, h2):
+
+    """
+    Essa função
+    - calcula a diferença entre dois horários do tipo int
+    - retorna a diferença formatada em "HH horas e mm minutos"
+    """
+
     if h1 > h2:
         h2 = datetime.strptime(str(h2), '%H%M')
         h1 = datetime.strptime(str(h1), '%H%M')
@@ -77,18 +72,33 @@ def getTimeDifference(h1, h2):
 
 #### New functions
 
-def fTimeToStr(h):
+def timeToStr(h):
+
+    """
+    Essa função converte variáveis do tipo datetime para str no formato '%H:%M'
+    """
+
     return datetime.strftime(h, '%H:%M')
 
-def fStrToTime(h):
-    agora = datetime.now()
+def strToTime(h):
+
+    """
+    Essa função converte horários do tipo str no formato '%H:%M' para datetime no formato 'ano-mês-dia hora:minuto'
+    """
+
+    currentTime = datetime.now()
     h = datetime.strptime(h, '%H:%M')
-    return datetime(agora.year, agora.month, agora.day, h.hour, h.minute)
+    return datetime(currentTime.year, currentTime.month, currentTime.day, h.hour, h.minute)
 
 def getTimeDifference2(h1, h2):
+
+    """
+    Essa função calcula a diferença de tempo entre dois horários do tipo datetime
+    """
+
     if type(h1) == str:
-        h1 = fStrToTime(h1)
+        h1 = strToTime(h1)
     if type(h2) == str:
-        h2 = fStrToTime(h2)
+        h2 = strToTime(h2)
 
     return h1 - timedelta(hours=h2.hour, minutes=h2.minute)

@@ -1,6 +1,8 @@
 from datetime import datetime
 from timeUtils import *
 
+# Dicionários das refeições com cada restaurante e seus respectivos horários de abertura e fechamento
+
 cafeLocalidades = {
     'RU': ['07:30','08:30']
 }
@@ -18,6 +20,11 @@ jantarLocalidades = {
 }
 
 def printLocalidades(dia_atual, h_atual, h_atual_time):
+
+    """
+    Essa função retorna o texto da mensagem do bot com os três restaurantes, seus horários dde abertura e fechamento
+    e o tempo restante para a próxima refeição em cada um.
+    """
         
     ##Segunda a Sexta
     if (dia_atual in 'Segunda Terça Quarta Quinta Sexta'):
@@ -65,20 +72,20 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
     ##Present Results
     if localidades == cafeLocalidades:
         return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
+\- RU ({localidades['RU'][0]} \- {localidades['RU'][1]}):
 · faltam {left} horas para {proximaRefeicao}
         """
     elif dia_atual in 'Sábado Domingo':
         return f"""
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
+\- RS ({localidades['RS'][0]} \- {localidades['RS'][1]}):
 · faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {proximaRefeicao}
         """
     else:
         return f"""
-- RU ({localidades['RU'][0]} - {localidades['RU'][1]}):
+\- RU ({localidades['RU'][0]} \- {localidades['RU'][1]}):
 · faltam {getTimeDifference(convertToInt(localidades['RU'][0]), h_atual)} horas para {proximaRefeicao}
-- RA ({localidades['RA'][0]} - {localidades['RA'][1]}):
+\- RA ({localidades['RA'][0]} \- {localidades['RA'][1]}):
 · faltam {getTimeDifference(convertToInt(localidades['RA'][0]), h_atual)} horas para {proximaRefeicao}
-- RS ({localidades['RS'][0]} - {localidades['RS'][1]}):
+\- RS ({localidades['RS'][0]} \- {localidades['RS'][1]}):
 · faltam {getTimeDifference(convertToInt(localidades['RS'][0]), h_atual)} horas para {proximaRefeicao}
         """
