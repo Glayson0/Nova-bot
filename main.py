@@ -198,7 +198,9 @@ def oProx(mensagem):
     diaAtual = getCurrentDay(mensagem)
 
     # Obtenção dos horários dos ônibus
-    horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2 = nextBus(horaAtual, diaAtual)
+    horarioOnibusIda1, horarioOnibusVolta1 = nextBus(horaAtual, diaAtual)
+
+    horarioOnibusIda2, horarioOnibusVolta2 = nextBusFromBus(horarioOnibusIda1, horarioOnibusVolta1, diaAtual)
 
 
     ## Diferença de tempo
@@ -271,6 +273,142 @@ Volta \(Unicamp \-\> Moradia\):
     # Envio da mensagem no chat
     bot.reply_to(mensagem, "Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
     bot.send_message(mensagem.chat.id, proxOnibus)
+
+# oTodosIda
+@bot.message_handler(commands=["oTodosIda"])
+def oTodosIda(message):
+    
+    horaAtual = datetime.fromtimestamp(message.date)
+    diaAtual = getCurrentDay(message)
+
+    proxOnibus = nextBus(horaAtual, diaAtual, 0)
+
+    # Lista com todos os horários de Ida
+
+    horariosIda = ""
+
+    pos = 0
+
+    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+        for horario in diaUtil_horariosIda:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'~{horario}~\n'
+                else:
+                    horariosIda += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'*{proxOnibus}*\n'
+                else:
+                    horariosIda += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}\n'
+                else:
+                    horariosIda += f'{horario}  \|  '
+    
+    else:
+
+        for horario in diaInutil_horariosIda:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}~\n'
+                else:
+                    horarioIda += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'*{proxOnibus}*\n'
+                else:
+                    horariosIda += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosIda += f'{horario}\n'
+                else:
+                    horariosIda += f'{horario}  \|  '
+
+    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.send_message(message.chat.id, horariosIda)
+
+# oTodosVolta
+@bot.message_handler(commands=["oTodosVolta"])
+def oTodosVolta(message):
+    
+    horaAtual = datetime.fromtimestamp(message.date)
+    diaAtual = getCurrentDay(message)
+
+    proxOnibus = nextBus(horaAtual, diaAtual, 1)
+
+    # Lista com todos os horários de Ida
+
+    horariosVolta = ""
+
+    pos = 0
+
+    if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
+
+        for horario in diaUtil_horariosVolta:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'~{horario}~\n'
+                else:
+                    horariosVolta += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'*{proxOnibus}*\n'
+                else:
+                    horariosVolta += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}\n'
+                else:
+                    horariosVolta += f'{horario}  \|  '
+    
+    else:
+
+        for horario in diaInutil_horariosVolta:
+
+            if fStrToTime(horario) < fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}~\n'
+                else:
+                    horarioIda += f'~{horario}~  \|  '
+            
+            elif fStrToTime(horario) == fStrToTime(proxOnibus):
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'*{proxOnibus}*\n'
+                else:
+                    horariosVolta += f'*{proxOnibus}*  \|  '
+            
+            else:
+                pos += 1
+                if pos % 3 == 0:
+                    horariosVolta += f'{horario}\n'
+                else:
+                    horariosVolta += f'{horario}  \|  '
+
+    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.send_message(message.chat.id, horariosVolta)
 
 # Comando /bandejao
 @bot.message_handler(commands=["bandejao"]) # Atribuição do comando /bandejao à função
