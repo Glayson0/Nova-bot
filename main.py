@@ -304,7 +304,7 @@ def oTodosIda(message):
     # Dia útil
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        for horario in diaUtil_horariosVolta:
+        for horario in diaUtil_horariosIda:
 
             # Ônibus que já passaram
             if strToTime(horario) < strToTime(proxOnibus): 
