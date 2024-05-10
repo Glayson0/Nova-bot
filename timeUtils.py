@@ -2,8 +2,13 @@ from datetime import datetime, timedelta
 
 ## General time conversion
 def getCurrentDay(mensagem):
+    """
+    Essa função
+    - obtém o dia atual em string em inglês a partir do objeto mensagem
+    - converte os dias em inglês para português brasileiro e retorna o dia
+    """
 
-    # Dia atual
+    # Obtém o dia atual
     diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Em inglês
 
     # Conversão para pt-br

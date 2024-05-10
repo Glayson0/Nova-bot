@@ -1,6 +1,11 @@
 from timeUtils import *
 
-# Horários do ônibus em str
+## Horários do ônibus
+"""
+Listas com horários de ônibus em string dos dias úteis e não-úteis.
+"""
+
+# Dia útil
 diaUtil_horariosIda = ['06:30', '06:45', '06:50', '07:00', '07:10', '07:15', '07:20', '07:25', '07:35', '07:40', '07:45', '08:00', '08:10', '08:20',
     '08:30', '08:40', '08:50', '09:00', '09:10', '09:20', '09:30', '09:40', '09:45', '10:05', '10:15', '10:30','10:45', '11:00',
     '11:20', '11:30', '11:45', '12:00', '12:15', '12:20', '12:35', '12:45', '13:00', '13:05', '13:20', '13:30', '13:45', '14:00',
@@ -15,69 +20,96 @@ diaUtil_horariosVolta = ['09:00', '09:30', '09:50', '10:00', '10:15', '10:40', '
                   '20:05', '20:20', '20:40', '20:50', '21:00', '21:25', '21:35', '21:55', '22:00', '22:10', '22:20', '22:30',
                   '22:35', '22:45', '23:05', '23:15', '23:25', '23:35', '23:45']
 
-diaInutil_horariosIda = ['07:10', '07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '11:00', '11:10', '11:20', '11:30', 
+# Dia inútil
+diaNaoUtil_horariosIda = ['07:10', '07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '11:00', '11:10', '11:20', '11:30', 
                       '11:40', '11:50', '12:00', '12:10', '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', 
                       '13:30', '13:40', '13:50', '17:30', '17:40', '17:50', '18:00', '18:10', '18:20', '18:30', '18:40', '18:50']
 
-diaInutil_horariosVolta = ['07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '08:30', '11:10', '11:20', '11:30', '11:40', 
+diaNaoUtil_horariosVolta = ['07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '08:30', '11:10', '11:20', '11:30', '11:40', 
                         '11:50', '12:00', '12:10', '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', '13:30', 
                         '13:40', '13:50', '14:00', '17:40', '17:50', '18:00', '18:10', '18:20', '18:30', '18:40', '18:50', '19:00']
 
+## Funções relacionadas aos ônibus da moradia
+
 def nextBus(horaAtual, diaAtual):
+    """
+    Essa função descobre o horário dos próximos dois ônibus de ida e de volta cada. Ela
+    - compara a hora atual da mensagem com os horários de ônibus da lista do dia correto, percorrendo a lista
+    e verificando qual horário já passou e qual está por vir com as comparações com variáveis do tipo datetime.
+    """
 
-    existeOnibusIda = existeOnibusVolta = True
+    # Determina que há ônibus disponíveis
+    existeOnibusIda = True
+    existeOnibusVolta = True
 
-    # DIA ÚTIL
+    ### Busca do horário do próximo ônibus
+    
+    ## Dia útil
+    
+    # Ida
     if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-        # Condição para enquanto tiver ônibus no dia
-        if horaAtual < fStrToTime(diaUtil_horariosIda[-1]):
+        if horaAtual < fStrToTime(diaUtil_horariosIda[-1]): # Checagem se ainda há ônibus no dia
+            
             # Encontrar próximos ônibus
             for horarioOnibusIda in diaUtil_horariosIda:
+
                 if horaAtual <= fStrToTime(horarioOnibusIda):
                     horarioOnibusIda1 = horarioOnibusIda
                     if horarioOnibusIda1 != diaUtil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda1) + 1]
+                        horarioOnibusIda2 = diaUtil_horariosIda[diaUtil_horariosIda.index(horarioOnibusIda1) + 1]  # Õnibus próximo ao próximo
                     else:
                         horarioOnibusIda2 = None
                     break
+
         else:
             horarioOnibusIda1 = horarioOnibusIda2 = None
 
-        if horaAtual < fStrToTime(diaUtil_horariosVolta[-1]):
+    # Volta
+        if horaAtual < fStrToTime(diaUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
+
+            # Encontrar próximos ônibus
             for horarioOnibusVolta in diaUtil_horariosVolta:
+
                 if horaAtual <= fStrToTime(horarioOnibusVolta):
                     horarioOnibusVolta1 = horarioOnibusVolta
                     if horarioOnibusVolta1 != diaUtil_horariosVolta[-1]:
-                        horarioOnibusVolta2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusVolta1) + 1]
+                        horarioOnibusVolta2 = diaUtil_horariosVolta[diaUtil_horariosVolta.index(horarioOnibusVolta1) + 1] # Õnibus próximo ao próximo
                     else:
                         horarioOnibusVolta2 = None
                     break
         else:
             horarioOnibusVolta1 = horarioOnibusVolta2 = None
         
-    # DIA INUTIL
+    ## Dia inútil
+
+    # Ida
     else:
-        # Condição para enquanto tiver ônibus no dia
-        if horaAtual < fStrToTime(diaInutil_horariosIda[-1]):
+
+        if horaAtual < fStrToTime(diaNaoUtil_horariosIda[-1]): # Checagem se ainda há ônibus no dia
+
             # Encontrar próximos ônibus
-            for horarioOnibusIda in diaInutil_horariosIda:
+            for horarioOnibusIda in diaNaoUtil_horariosIda:
+
                 if horaAtual <= fStrToTime(horarioOnibusIda):
                     horarioOnibusIda1 = horarioOnibusIda
-                    if horarioOnibusIda1 != diaInutil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaInutil_horariosIda[diaInutil_horariosIda.index(horarioOnibusIda1) + 1]
+                    if horarioOnibusIda1 != diaNaoUtil_horariosIda[-1]:
+                        horarioOnibusIda2 = diaNaoUtil_horariosIda[diaNaoUtil_horariosIda.index(horarioOnibusIda1) + 1] # Õnibus próximo ao próximo
                     else:
                         horarioOnibusIda2 = None
                     break
         else:
             horarioOnibusIda1 = horarioOnibusIda2 = None
 
-        if horaAtual < fStrToTime(diaInutil_horariosVolta[-1]):
-            for horarioOnibusVolta in diaInutil_horariosVolta:
+        if horaAtual < fStrToTime(diaNaoUtil_horariosVolta[-1]):  # Checagem se ainda há ônibus no dia
+
+            # Encontrar próximos ônibus
+            for horarioOnibusVolta in diaNaoUtil_horariosVolta:
+
                 if horaAtual <= fStrToTime(horarioOnibusVolta):
                     horarioOnibusVolta1 = horarioOnibusVolta
-                    if horarioOnibusVolta1 != diaInutil_horariosVolta[-1]:
-                        horarioOnibusVolta2 = diaInutil_horariosVolta[diaInutil_horariosVolta.index(horarioOnibusVolta1) + 1]
+                    if horarioOnibusVolta1 != diaNaoUtil_horariosVolta[-1]:
+                        horarioOnibusVolta2 = diaNaoUtil_horariosVolta[diaNaoUtil_horariosVolta.index(horarioOnibusVolta1) + 1] # Õnibus próximo ao próximo
                     else:
                         horarioOnibusVolta2 = None
                     break
@@ -86,8 +118,15 @@ def nextBus(horaAtual, diaAtual):
     
     return horarioOnibusIda1, horarioOnibusIda2, horarioOnibusVolta1, horarioOnibusVolta2
 
-def formatingBusDiffTime(time, diffTime):
-    if time != None:
+def formatingBusDiffTime(horaAtual, diffTime):
+    """
+    Essa função formata o tempo faltante para o próximo ônibus
+    Parâmentros:
+    - horaAtual: horário da mensagem;
+    - diffTime: a diferença de tempo entre o horário da mensagem e o horário do ônibus.
+    """
+    
+    if horaAtual != None:
         if diffTime.hour > 0:
             return f'{diffTime.hour} hr e {diffTime.minute} min'
         else:
