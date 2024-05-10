@@ -1,9 +1,6 @@
 from timeUtils import *
 
-## Horários do ônibus
-"""
-Listas com horários de ônibus em string dos dias úteis e não-úteis.
-"""
+## Listas com horários de ônibus em string dos dias úteis e não-úteis.
 
 # Dia útil
 diaUtil_horariosIda = ['06:30', '06:45', '06:50', '07:00', '07:10', '07:15', '07:20', '07:25', '07:35', '07:40', '07:45', '08:00', '08:10', '08:20',
@@ -36,11 +33,15 @@ def nextBus(horaAtual, diaAtual, percurso=2):
     Essa função descobre o horário dos próximos dois ônibus de ida e de volta cada. Ela
     - compara a hora atual da mensagem com os horários de ônibus da lista do dia correto, percorrendo a lista
     e verificando qual horário já passou e qual está por vir com as comparações com variáveis do tipo datetime.
+    
+    Parâmetros:
+    - horaAtual: horário atual da mensagem
+    - diaAtual: dia atual da mensagem
+    - percurso:
+        - [1] Retorna apenas horário de Ida 
+        - [2] Retorna apenas horário de Volta
+        - [3] Retorna ambos horarios
     """
-
-    # Determina que há ônibus disponíveis
-    existeOnibusIda = True
-    existeOnibusVolta = True
 
     ### Busca do horário do próximo ônibus
     
