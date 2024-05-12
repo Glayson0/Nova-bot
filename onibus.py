@@ -71,7 +71,7 @@ def nextBus(horaAtual, diaAtual, percurso=2):
         else:
             horarioOnibusVolta = None
         
-    ## Dia inútil
+    ## Dia não-útl
 
     # Ida
     else:
@@ -82,12 +82,8 @@ def nextBus(horaAtual, diaAtual, percurso=2):
             for horarioOnibusIda in diaNaoUtil_horariosIda:
 
                 if horaAtual <= strToTime(horarioOnibusIda):
-                    horarioOnibusIda1 = horarioOnibusIda
-                    if horarioOnibusIda1 != diaNaoUtil_horariosIda[-1]:
-                        horarioOnibusIda2 = diaNaoUtil_horariosIda[diaNaoUtil_horariosIda.index(horarioOnibusIda1) + 1] # Õnibus próximo ao próximo
-                    else:
-                        horarioOnibusIda2 = None
-                    break
+                        
+                        break
         else:
             horarioOnibusIda = None
 
@@ -97,12 +93,9 @@ def nextBus(horaAtual, diaAtual, percurso=2):
             for horarioOnibusVolta in diaNaoUtil_horariosVolta:
 
                 if horaAtual <= strToTime(horarioOnibusVolta):
-                    horarioOnibusVolta1 = horarioOnibusVolta
-                    if horarioOnibusVolta1 != diaNaoUtil_horariosVolta[-1]:
-                        horarioOnibusVolta2 = diaNaoUtil_horariosVolta[diaNaoUtil_horariosVolta.index(horarioOnibusVolta1) + 1] # Õnibus próximo ao próximo
-                    else:
-                        horarioOnibusVolta2 = None
+
                     break
+                
         else:
             horarioOnibusVolta = None
     
@@ -112,20 +105,6 @@ def nextBus(horaAtual, diaAtual, percurso=2):
         return horarioOnibusVolta
     else:
         return horarioOnibusIda, horarioOnibusVolta
-
-def formatingBusDiffTime(horaAtual, diffTime):
-    """
-    Essa função formata o tempo faltante para o próximo ônibus
-    Parâmentros:
-    - horaAtual: horário da mensagem;
-    - diffTime: a diferença de tempo entre o horário da mensagem e o horário do ônibus.
-    """
-    
-    if horaAtual != None:
-        if diffTime.hour > 0:
-            return f'{diffTime.hour} hr e {diffTime.minute} min'
-        else:
-            return f'{diffTime.minute} min'
 
 def nextBusFromBus(horarioOnibusIda, horarioOnibusVolta, diaAtual):
 

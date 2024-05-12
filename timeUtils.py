@@ -36,42 +36,6 @@ def getCurrentDay(mensagem):
     
     return diaAtual
 
-def convertToInt(time):
-
-    """
-    Essa função
-    - converte uma variável do tipo string para o tipo inteiro
-    """
-
-    time = str(time)
-    if time[0] == 0:
-        del time[0]
-    return int(time.replace(':',''))
-
-def getTimeDifference(h1, h2):
-
-    """
-    Essa função
-    - calcula a diferença entre dois horários do tipo int
-    - retorna a diferença formatada em "HH horas e mm minutos"
-    """
-
-    if h1 > h2:
-        h2 = datetime.strptime(str(h2), '%H%M')
-        h1 = datetime.strptime(str(h1), '%H%M')
-        h2 += timedelta(days=1)
-        until_h2 = h2 - h1
-        until_h2 = datetime.strftime(until_h2)
-        leftTime = convertToInt(until_h2)
-        return f'{leftTime[:2]} horas e {leftTime[4:]} minutos'
-    if h1 == h2:
-        return '00:00'
-    if h1 < h2:
-        return timedelta(hours=h2 // 100, minutes=h2 % 100) - timedelta(hours=h1 // 100, minutes=h1 % 100)
-
-
-#### New functions
-
 def timeToStr(h):
 
     """
@@ -90,10 +54,11 @@ def strToTime(h):
     h = datetime.strptime(h, '%H:%M')
     return datetime(currentTime.year, currentTime.month, currentTime.day, h.hour, h.minute)
 
-def getTimeDifference2(h1, h2):
+def getTimeDifference(h1, h2):
 
     """
-    Essa função calcula a diferença de tempo entre dois horários do tipo datetime
+    Essa função calcula a diferença de tempo entre dois horários do tipo datetime.
+    h1 precisa ser sempre menor que o h2.
     """
 
     if type(h1) == str:
@@ -102,3 +67,17 @@ def getTimeDifference2(h1, h2):
         h2 = strToTime(h2)
 
     return h1 - timedelta(hours=h2.hour, minutes=h2.minute)
+
+def formatingDiffTime(horaAtual, diffTime):
+    """
+    Essa função formata o tempo faltante para o próximo ônibus
+    Parâmentros:
+    - horaAtual: horário da mensagem;
+    - diffTime: a diferença de tempo entre o horário da mensagem e o horário do ônibus.
+    """
+    
+    if horaAtual != None:
+        if diffTime.hour > 0:
+            return f'{diffTime.hour} hr e {diffTime.minute} min'
+        else:
+            return f'{diffTime.minute} min'
