@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 ## General time conversion
-def getCurrentDay(mensagem):
+def getCurrentDay(mensagem, m=True):
     
     """
     Essa função
@@ -10,7 +10,11 @@ def getCurrentDay(mensagem):
     """
 
     # Obtém o dia atual
-    diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Inglês
+    if m:
+        diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Inglês
+    else:
+        diaAtual = datetime.now()
+        diaAtual = diaAtual.strftime('%A') # Inglês
 
     # Conversão para pt-br
     if diaAtual == "Monday":

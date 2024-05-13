@@ -1,24 +1,26 @@
-import telebot # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
+"""
+Nome do arquivo: main.py
+Autor: Glayson Oliveira
+Descrição: Este é o arquivo principal do bot. É aqui que são definidas as funções que serão chamadas pelo
+usuário por meio das mensagens pelo Telegram, que são checadas continuamente.
+"""
+
+# Importações de bibliotecas
+import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
+
 from bandejao import *
 from timeUtils import *
 from onibus import *
 from websiteRequest import *
+from menus import *
 
 
 # Fazer conexão com a API do bot do Telegram
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
 bot = telebot.TeleBot(CHAVE_API, parse_mode='MarkdownV2')
-
-"""
-NOTAS:
-- O parâmetro "messagem" é um objeto mensagem enviada pelo usuário;
-- Todas as funções podem ser chamadas a qualquer momento no chat pelos seus respectivos comandos;
-- Há uma hierarquia vertical para a chamada das funções que têm o message_handler. Ou seja, por exemplo: se houver mais de uma função 
-com o mesmo trigger, apenas aquela que está mais acima será ativada.
-
-"""
 
 ### Comandos intermediários: apenas auxiliam o usuário a chegarem às funcionalidades do bot
 
@@ -27,10 +29,11 @@ com o mesmo trigger, apenas aquela que está mais acima será ativada.
 # Comando /start
 @bot.message_handler(commands=["start"]) # Atribuição do comando /start à função
 def start(mensagem):
-
     """
-    Essa função
-    - envia uma mensagem de introdução ao bot no chat, indicando o usuário a utilizar o comando /help.
+    Envia uma mensagem de introdução no chat. Geralmente utilizada apenas na primeira
+    interação do usuário com o bot.
+
+    :param mensagem: A mensagem enviada pelo usuário.
     """
 
     # Texto da mensagem do bot
@@ -39,17 +42,27 @@ Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
 
 Meu objetivo é fornecer informações dos ônibus da moradia e dos restaurantes da Unicamp de forma rápida e fácil\.
 
-Clique no botão abaixo ou digite /help para conhecer alguns dos comandos que você pode utilizar\.
+Clique no botão que apareceu no lugar do seu teclado ou digite /home para ver o menu principal\.
 """
     
     # Botões
     startButton = ReplyKeyboardMarkup(resize_keyboard=True)  # Criação
 
-    startButton.add(KeyboardButton('/help'))
+    startButton.add(KeyboardButton('/home'))
 
     # Envio de mensagem
     bot.send_message(mensagem.chat.id, f'👋 Olá, {mensagem.chat.first_name}\! Como vai?')
     bot.send_message(mensagem.chat.id, startText, reply_markup=startButton)
+
+@bot.message_handler(commands=["home"]) # Atribuição do comando /start à função
+def menuPrincipal(mensagem):
+    """
+    Envia uma mensagem no chat: um menu com botões inline para acessar as os menus das funcionalidades do bot.
+
+    :param mensagem: A mensagem enviada pelo usuário.
+    """
+
+    bot.send_message(mensagem.chat.id, menuHome.text, reply_markup=menuHome.buttons)
 
 # Comando /help
 @bot.message_handler(commands=["help"])  # Atribuição do comando /help à função
@@ -80,29 +93,6 @@ def help(mensagem):
     bot.reply_to(mensagem, 'Entendido\! Aqui está uma lista com os comandos principais:')
     bot.send_message(mensagem.chat.id, helpText, reply_markup=helpButtons)
 
-@bot.message_handler(commands=["home"])  # Atribuição do comando /help à função
-def home(mensagem):
-    
-    # Texto da mensagem do bot
-    homeText = """
-\- /onibus: Ver comandos para os ônibus da moradia
-
-\- /bandejao: Ver os comandos para o bandejao
-
-\- /tudo: Listar todos os comandos
-"""  
-
-    # Botões
-    helpButtons = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-
-    helpButtons.add(KeyboardButton('/onibus'))
-    helpButtons.add(KeyboardButton('/bandejao'))
-    helpButtons.add(KeyboardButton('/tudo'))
-
-    # Envio de mensagem
-    bot.reply_to(mensagem, 'Entendido\! Aqui está uma lista com os comandos principais:')
-    bot.send_message(mensagem.chat.id, homeText, reply_markup=helpButtons)
-
 # Comando /onibus
 @bot.message_handler(commands=["onibus"]) # Atribuição do comando /ônibus à função
 def onibus(mensagem):
@@ -112,30 +102,9 @@ def onibus(mensagem):
     - envia uma mensagem no chat listando todos os comandos relacionados com os ônibus da moradia.
     """
 
-    # Texto da mensagem do bot
-    onibusText = """
-\- /oProx: Ver os próximos 2 ônibus de ida e de volta
-
-\- /oTodos: Ver foto com todos os horários de ônibus
-
-\- /oTodosIda: Ver todos os horários de ônibus de IDA do dia \(Moradia \-\> Unicamp\)
-
-\- /oTodosVolta: Ver todos os horários de ônibus de VOLTA dia \(Unicamp \-\> Moradia\)
-"""
-    # Botões
-    onibusButtons = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-
-    onibusButtons.add(KeyboardButton('/oProx'))
-    onibusButtons.add(KeyboardButton('/oTodos'))
-    onibusButtons.add(KeyboardButton('/oTodosIda'))
-    onibusButtons.add(KeyboardButton('/oTodosVolta'))
-
-    onibusButtons.add(KeyboardButton('/home'))
-
     # Envio de mensagem
     bot.reply_to(mensagem, 'Okay\! Aqui estão os comandos para os ônibus da moradia:')
-    bot.send_message(mensagem.chat.id, onibusText, reply_markup=onibusButtons)
-
+    bot.send_message(mensagem.chat.id, menuOnibus.text, reply_markup=menuOnibus.buttons)
 
 # Comando /bandejão
 @bot.message_handler(commands=["bandejao"]) # Atribuição do comando /bandejao à função
@@ -146,62 +115,24 @@ def bandejao(mensagem):
     - envia uma mensagem no chat listando todos os comandos relacionados com os restaurantes da Unicamp.
     """
 
-    # Texdo da mensagem do bot
-    bandejaoText = """
-Geral
-\- /bHoras: Ver os horários dos três restaurantes
-
-\- /bCardapio: Ver o cardápio de almoço e jantar
-
-\- /bJaPode: Ver refeições em andamento
-
-Restaurantes
-\- /ru: Ver informações do RU
-
-\- /rs: Ver informações do RS
-
-\- /ra: Ver informações do RA
-"""
-
-    # Botões
-    bandejaoButtons = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-    bandejaoButtons.add(KeyboardButton('/bHoras'), KeyboardButton('/bCardapio'), KeyboardButton('/bJaPode'))
-    bandejaoButtons.add(KeyboardButton('/ru'), KeyboardButton('/rs'), KeyboardButton('/ra'))
-
-    bandejaoButtons.add(KeyboardButton('/home'))
-
     # Envio de mensagem
     bot.reply_to(mensagem, 'Certo\! Aqui estão os comandos para o bandejão:')
-    bot.send_message(mensagem.chat.id, bandejaoText, reply_markup=bandejaoButtons)
+    bot.send_message(mensagem.chat.id, menuRestaurantes.text, reply_markup=menuRestaurantes.buttons)
 
 # Comando /bCardapio
 @bot.message_handler(commands=["bCardapio"]) # Atribuição do comando /bCardapio à função
-def bCardapio(mensagem):
+def bCardapio(mensagem, isCallback=False):
 
     """
     Essa função envia uma mensagem no chat com as opções de cardápio (Tradicional e Vegano) para o usuário escolher.
     """
-    
-    # Texto da mensagem do bot
-    cardapioText = """
-\- /bTradicional: Cardápio tradicional
-
-\- /bVegano: Cardápio vegano
-"""
-
-    # Botões
-    cardapioButtons = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-    cardapioButtons.add(KeyboardButton('/bTradicional'))
-    cardapioButtons.add(KeyboardButton('/bVegano'))
-
-    cardapioButtons.add(KeyboardButton('/home'))
 
     # Envio de mensagem
-    bot.reply_to(mensagem, 'Ta bom\! Qual cardápio deseja ver?')
-    bot.send_message(mensagem.chat.id, cardapioText, reply_markup=cardapioButtons)
-
-    
-
+    if isCallback:
+        bot.send_message(mensagem.chat.id, menuCardapios.text, reply_markup=menuCardapios.buttons)
+    else:
+        bot.reply_to(mensagem, 'Ta bom\! Qual cardápio deseja ver?')
+        bot.send_message(mensagem.chat.id, menuCardapios.text, reply_markup=menuCardapios.buttons)
 
 ### Comandos de funcionalidades: as funcionalidades de fato do bot
 
@@ -486,24 +417,29 @@ def oTodosVolta(message):
 
 # Comando /bTradicional
 @bot.message_handler(commands=["bTradicional"]) # Atribuição do comando /bandejao à função
-def bTradicional(mensagem):
+def bTradicional(mensagem, isCallback=False):
 
     """
     Essa função:
     - Envia uma mensagem no chat com o almoço e janta
     """
 
-    # Obtenção do tempo atual a partir da mensagem
-    tempoAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    if not isCallback:
+        # Obtenção do tempo atual a partir da mensagem
+        tempoAtual = datetime.fromtimestamp(mensagem.date)
+        diaAtual = getCurrentDay(mensagem)
+    else:
+        tempoAtual = datetime.now()
+        diaAtual = getCurrentDay(mensagem, False)
 
     if diaAtual == "Domingo":
         almocoTradicional = webScrapingCardapio(tempoAtual, diaAtual)[0]
     
-    # Texto da mensagem do bot
+    # Texto da mensagem do bot  
         cardapioTradicionalText = f"""
-    CARDÁPIO TRADICIONAL
-    \-\> Almoço
+    Cardápio *Tradicional* 🥩
+
+\-\> *Almoço*
     *Proteína*: {almocoTradicional.proteina}
     *Base*: {almocoTradicional.base}
     *Complemento*: {almocoTradicional.complemento}
@@ -511,7 +447,7 @@ def bTradicional(mensagem):
     *Fruta*: {almocoTradicional.fruta}
     *Suco*: {almocoTradicional.suco}
     
-    \-\> Jantar
+\-\> *Jantar*
     Não tem jantar aos domingos\!
 """
 
@@ -521,8 +457,9 @@ def bTradicional(mensagem):
 
         # Texto da mensagem do bot
         cardapioTradicionalText = f"""
-    CARDÁPIO TRADICIONAL
-    \-\> Almoço
+    Cardápio *Tradicional* 🥩
+
+\-\> *Almoço*
     *Proteína*: {almocoTradicional.proteina}
     *Base*: {almocoTradicional.base}
     *Complemento*: {almocoTradicional.complemento}
@@ -530,8 +467,7 @@ def bTradicional(mensagem):
     *Fruta*: {almocoTradicional.fruta}
     *Suco*: {almocoTradicional.suco}
 
-    \-\> Jantar
-
+\-\> *Jantar*
     *Proteína*: {jantarTradicional.proteina}
     *Base*: {jantarTradicional.base}
     *Complemento*: {jantarTradicional.complemento}
@@ -545,7 +481,7 @@ def bTradicional(mensagem):
 
 # Comando /bVegano
 @bot.message_handler(commands=["bVegano"]) # Atribuição do comando /bandejao à função
-def bTradicional(mensagem):
+def bVegano(mensagem, isCallback=False):
 
     """
     Essa função:
@@ -562,8 +498,9 @@ def bTradicional(mensagem):
     
     # Texto da mensagem do bot
         cardapioVeganoText = f"""
-    CARDÁPIO TRADICIONAL
-    \-\> Almoço
+    Cardápio *Vegano* 💚
+
+\-\> *Almoço*
     *Proteína*: {almocoVegano.proteina}
     *Base*: {almocoVegano.base}
     *Complemento*: {almocoVegano.complemento}
@@ -571,7 +508,7 @@ def bTradicional(mensagem):
     *Fruta*: {almocoVegano.fruta}
     *Suco*: {almocoVegano.suco}
     
-    \-\> Jantar
+\-\> *Jantar*
     Não tem jantar aos domingos\!
 """
 
@@ -581,8 +518,9 @@ def bTradicional(mensagem):
 
         # Texto da mensagem do bot
         cardapioVeganoText = f"""
-    CARDÁPIO TRADICIONAL
-    \-\> Almoço
+    Cardápio *Vegano* 💚
+
+\-\> *Almoço*
     *Proteína*: {almocoVegano.proteina}
     *Base*: {almocoVegano.base}
     *Complemento*: {almocoVegano.complemento}
@@ -590,8 +528,7 @@ def bTradicional(mensagem):
     *Fruta*: {almocoVegano.fruta}
     *Suco*: {almocoVegano.suco}
 
-    \-\> Jantar
-
+\-\> *Jantar*
     *Proteína*: {jantarVegano.proteina}
     *Base*: {jantarVegano.base}
     *Complemento*: {jantarVegano.complemento}
@@ -605,7 +542,7 @@ def bTradicional(mensagem):
 
 # Comando /ru
 @bot.message_handler(commands=["ru"]) # Atribuição do comando /bandejao à função
-def ru(mensagem):
+def bRS(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
@@ -637,7 +574,7 @@ Restaurante Universitário \(RU\)
 
 # Comando /ra
 @bot.message_handler(commands=["ra"]) # Atribuição do comando /bandejao à função
-def ra(mensagem):
+def bRA(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
@@ -668,7 +605,7 @@ Restaurante Administrativo \(RA\)
 
 # Comando /rs
 @bot.message_handler(commands=["rs"]) # Atribuição do comando /bandejao à função
-def rs(mensagem):
+def bRU(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
@@ -697,6 +634,54 @@ Restaurante Saturnino \(RS\)
 
     bot.send_photo(mensagem.chat.id, rs.camera.imagem, caption=textoRS)
 
+# Manipulador de callback para processar a seleção do usuário
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    """
+    Recebe todos os retornos dos botões do tipo inline do bot.
+    """
+
+    # botão Menu ônibus
+    if call.data == 'menuOnibus':
+
+        bot.edit_message_text(menuOnibus.text, call.message.chat.id, call.message.message_id, reply_markup=menuOnibus.buttons)
+
+    # botão Menu restaurantes
+    elif call.data == 'menuRestaurantes':
+        
+        bot.edit_message_text(menuRestaurantes.text, call.message.chat.id, call.message.message_id, reply_markup=menuRestaurantes.buttons)
+
+    # botao Menu principal (home)
+    elif call.data == 'home':
+
+        bot.edit_message_text(menuHome.text, call.message.chat.id, call.message.message_id, reply_markup=menuHome.buttons)
+
+    # botao Menu principal (home)
+    elif call.data == 'bCardapios':
+
+        bCardapio(call.message, True)
+
+    # botao Menu principal (home)
+    elif call.data == 'bTradicional':
+
+        bTradicional(call.message, True)
+
+    elif call.data == 'bVegano':
+
+        bVegano(call.message, True)
+    
+    elif call.data == 'ru':
+
+        bRU(call.message, True)
+
+    elif call.data == 'ra':
+
+        bRA(call.message, True)
+
+    elif call.data == 'rs':
+
+        bRS(call.message, True)
+
 ## Resposta à mensagens desconhecidas ao bot 
 
 def verify(mensagem):
@@ -714,10 +699,10 @@ def unknownCommand(mensagem):
 
     # Botões
     helpButton = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-    helpButton.add(KeyboardButton('/help'))
+    helpButton.add(KeyboardButton('/home'))
 
     # Envio de mensagem
     bot.reply_to(mensagem, 'Hmmm, eu não conheço esse comando\.') 
-    bot.send_message(mensagem.chat.id, 'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
+    bot.send_message(mensagem.chat.id, 'Digite /home ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
 
 bot.polling()

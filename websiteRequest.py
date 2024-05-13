@@ -44,7 +44,10 @@ def webScrapingCamera(restaurante, data):
         soup = BeautifulSoup(content, 'html.parser')
         driver.quit() # Fecha o navegador
 
-        image_url = soup.find(id="img_camera_ru_a")["src"]
+        try:
+            image_url = soup.find(id="img_camera_ru_a")["src"]
+        except:
+            webScrapingCamera(restaurante, data)
 
         _, encoded_image = image_url.split(",", 1)
         image_data = base64.b64decode(encoded_image)
@@ -72,7 +75,10 @@ def webScrapingCamera(restaurante, data):
         soup = BeautifulSoup(content, 'html.parser')
         driver.quit() # Fecha o navegador
 
-        image_url = soup.find(id="img_camera_ra")["src"]
+        try:
+            image_url = soup.find(id="img_camera_ra")["src"]
+        except:
+            webScrapingCamera(restaurante, data)
 
         _, encoded_image = image_url.split(",", 1)
         image_data = base64.b64decode(encoded_image)
@@ -100,7 +106,10 @@ def webScrapingCamera(restaurante, data):
         soup = BeautifulSoup(content, 'html.parser')
         driver.quit() # Fecha o navegador
 
-        image_url = soup.find(id="img_camera_rs")["src"]
+        try:
+            image_url = soup.find(id="img_camera_rs")["src"]
+        except:
+            webScrapingCamera(restaurante, data)
 
         _, encoded_image = image_url.split(",", 1)
         image_data = base64.b64decode(encoded_image)
