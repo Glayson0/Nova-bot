@@ -14,17 +14,17 @@ from datetime import datetime
 from bandejao import *
 from timeUtils import *
 from onibus import *
-from websiteRequest import *
-from menus import *
+from webScraping import *
+from messages import *
 
 
 # Fazer conexão com a API do bot do Telegram
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
 bot = telebot.TeleBot(CHAVE_API, parse_mode='MarkdownV2')
 
-### Comandos intermediários: apenas auxiliam o usuário a chegarem às funcionalidades do bot
-
-## Geral
+##
+##  MENSAGENS GERAIS
+##
 
 # Comando /start
 @bot.message_handler(commands=["start"]) # Atribuição do comando /start à função
@@ -37,13 +37,6 @@ def start(mensagem):
     """
 
     # Texto da mensagem do bot
-    startText = f"""
-Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
-
-Meu objetivo é fornecer informações dos ônibus da moradia e dos restaurantes da Unicamp de forma rápida e fácil\.
-
-Clique no botão que apareceu no lugar do seu teclado ou digite /home para ver o menu principal\.
-"""
     
     # Botões
     startButton = ReplyKeyboardMarkup(resize_keyboard=True)  # Criação
@@ -61,37 +54,12 @@ def menuPrincipal(mensagem):
 
     :param mensagem: A mensagem enviada pelo usuário.
     """
+    
+    bot.send_message(mensagem.chat.id, menuHomeMessage.text, reply_markup=menuHomeMessage.buttons)
 
-    bot.send_message(mensagem.chat.id, menuHome.text, reply_markup=menuHome.buttons)
-
-# Comando /help
-@bot.message_handler(commands=["help"])  # Atribuição do comando /help à função
-def help(mensagem):
-
-    """
-    Essa função
-    - envia uma mensagem no chat com 3 comandos principais para ajudar o usuário.
-    """
-
-    # Texto da mensagem do bot
-    helpText = """
-\- /onibus: Ver comandos para os ônibus da moradia
-
-\- /bandejao: Ver os comandos para o bandejao
-
-\- /tudo: Listar todos os comandos
-"""  
-
-    # Botões
-    helpButtons = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
-
-    helpButtons.add(KeyboardButton('/onibus'))
-    helpButtons.add(KeyboardButton('/bandejao'))
-    helpButtons.add(KeyboardButton('/tudo'))
-
-    # Envio de mensagem
-    bot.reply_to(mensagem, 'Entendido\! Aqui está uma lista com os comandos principais:')
-    bot.send_message(mensagem.chat.id, helpText, reply_markup=helpButtons)
+##
+##  MENUS
+##
 
 # Comando /onibus
 @bot.message_handler(commands=["onibus"]) # Atribuição do comando /ônibus à função
@@ -129,14 +97,16 @@ def bCardapio(mensagem, isCallback=False):
 
     # Envio de mensagem
     if isCallback:
-        bot.send_message(mensagem.chat.id, menuCardapios.text, reply_markup=menuCardapios.buttons)
+        bot.send_message(mensagem.chat.id, cardapiosMessage.text, reply_markup=cardapiosMessage.buttons)
     else:
         bot.reply_to(mensagem, 'Ta bom\! Qual cardápio deseja ver?')
-        bot.send_message(mensagem.chat.id, menuCardapios.text, reply_markup=menuCardapios.buttons)
+        bot.send_message(mensagem.chat.id, cardapiosMessage.text, reply_markup=cardapiosMessage.buttons)
 
-### Comandos de funcionalidades: as funcionalidades de fato do bot
 
-## Ônibus
+##
+##  ÔNIBUS
+##
+
 
 # Comando /oTodos
 @bot.message_handler(commands=["oTodos"]) # Atribuição do comando /oTodos à função
@@ -164,7 +134,7 @@ def oProx(mensagem):
 
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    diaAtual = getWeekDay(mensagem)
 
     # Obtenção dos horários dos ônibus
     horarioOnibus_ida1, horarioOnibus_volta1 = nextBus(horaAtual, diaAtual)
@@ -252,7 +222,7 @@ def oTodosIda(message):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(message.date)
-    diaAtual = getCurrentDay(message)
+    diaAtual = getWeekDay(message)
 
     # Obtenção do horário do próximo ônibus
     proxOnibus = nextBus(horaAtual, diaAtual, 0)
@@ -339,7 +309,7 @@ def oTodosVolta(message):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(message.date)
-    diaAtual = getCurrentDay(message)
+    diaAtual = getWeekDay(message)
 
     # Obtenção do horário do próximo ônibus
     proxOnibus = nextBus(horaAtual, diaAtual, 0)
@@ -413,7 +383,11 @@ def oTodosVolta(message):
     bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, horariosVolta)
 
-## Bandejao
+
+##
+##  RESTAURANTES
+##
+
 
 # Comando /bTradicional
 @bot.message_handler(commands=["bTradicional"]) # Atribuição do comando /bandejao à função
@@ -427,54 +401,10 @@ def bTradicional(mensagem, isCallback=False):
     if not isCallback:
         # Obtenção do tempo atual a partir da mensagem
         tempoAtual = datetime.fromtimestamp(mensagem.date)
-        diaAtual = getCurrentDay(mensagem)
+        diaAtual = getWeekDay(mensagem)
     else:
         tempoAtual = datetime.now()
-        diaAtual = getCurrentDay(mensagem, False)
-
-    if diaAtual == "Domingo":
-        almocoTradicional = webScrapingCardapio(tempoAtual, diaAtual)[0]
-    
-    # Texto da mensagem do bot  
-        cardapioTradicionalText = f"""
-    Cardápio *Tradicional* 🥩
-
-\-\> *Almoço*
-    *Proteína*: {almocoTradicional.proteina}
-    *Base*: {almocoTradicional.base}
-    *Complemento*: {almocoTradicional.complemento}
-    *Salada*: {almocoTradicional.salada}
-    *Fruta*: {almocoTradicional.fruta}
-    *Suco*: {almocoTradicional.suco}
-    
-\-\> *Jantar*
-    Não tem jantar aos domingos\!
-"""
-
-    else:
-        almocoTradicional = webScrapingCardapio(tempoAtual, diaAtual)[0]
-        jantarTradicional = webScrapingCardapio(tempoAtual, diaAtual)[1]
-
-        # Texto da mensagem do bot
-        cardapioTradicionalText = f"""
-    Cardápio *Tradicional* 🥩
-
-\-\> *Almoço*
-    *Proteína*: {almocoTradicional.proteina}
-    *Base*: {almocoTradicional.base}
-    *Complemento*: {almocoTradicional.complemento}
-    *Salada*: {almocoTradicional.salada}
-    *Fruta*: {almocoTradicional.fruta}
-    *Suco*: {almocoTradicional.suco}
-
-\-\> *Jantar*
-    *Proteína*: {jantarTradicional.proteina}
-    *Base*: {jantarTradicional.base}
-    *Complemento*: {jantarTradicional.complemento}
-    *Salada*: {jantarTradicional.salada}
-    *Fruta*: {jantarTradicional.fruta}
-    *Suco*: {jantarTradicional.suco}
-    """
+        diaAtual = getWeekDay(mensagem, False)
 
     # Envio da mensagem no chat
     bot.send_message(mensagem.chat.id, cardapioTradicionalText)
@@ -491,10 +421,10 @@ def bVegano(mensagem, isCallback=False):
     # Obtenção do tempo atual a partir da mensagem
     tempoAtual = datetime.fromtimestamp(mensagem.date)
 
-    diaAtual = getCurrentDay(mensagem)
+    diaAtual = getWeekDay(mensagem)
 
     if diaAtual == "Domingo":
-        almocoVegano = webScrapingCardapio(tempoAtual, diaAtual)[0]
+        almocoVegano = getCardapio(tempoAtual, diaAtual)[0]
     
     # Texto da mensagem do bot
         cardapioVeganoText = f"""
@@ -513,8 +443,8 @@ def bVegano(mensagem, isCallback=False):
 """
 
     else:
-        almocoVegano = webScrapingCardapio(tempoAtual, diaAtual)[0]
-        jantarVegano = webScrapingCardapio(tempoAtual, diaAtual)[1]
+        almocoVegano = getCardapio(tempoAtual, diaAtual)[0]
+        jantarVegano = getCardapio(tempoAtual, diaAtual)[1]
 
         # Texto da mensagem do bot
         cardapioVeganoText = f"""
@@ -546,7 +476,7 @@ def bRS(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    diaAtual = getWeekDay(mensagem)
 
     ru = rest()[0]
     status(horaAtual, diaAtual, ru)
@@ -578,7 +508,7 @@ def bRA(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    diaAtual = getWeekDay(mensagem)
 
     ra = rest()[1]
     status(horaAtual, diaAtual, ra)
@@ -609,7 +539,7 @@ def bRU(mensagem, isCallback=False):
     
     # Obtenção do tempo atual a partir da mensagem
     horaAtual = datetime.fromtimestamp(mensagem.date)
-    diaAtual = getCurrentDay(mensagem)
+    diaAtual = getWeekDay(mensagem)
 
     rs = rest()[2]
     status(horaAtual, diaAtual, rs)
@@ -634,11 +564,16 @@ Restaurante Saturnino \(RS\)
 
     bot.send_photo(mensagem.chat.id, rs.camera.imagem, caption=textoRS)
 
+
+##
+##  HANDLER: callback_data
+##
+
 # Manipulador de callback para processar a seleção do usuário
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     """
-    Recebe todos os retornos dos botões do tipo inline do bot.
+    Recebe todos os callhambeque retornos dos botões do tipo inline do bot.
     """
 
     # botão Menu ônibus
@@ -682,7 +617,10 @@ def callback_query(call):
 
         bRS(call.message, True)
 
-## Resposta à mensagens desconhecidas ao bot 
+
+##
+##  CASO: usuário enviou uma mensagem/comando desconhecido
+##
 
 def verify(mensagem):
     """
@@ -690,14 +628,14 @@ def verify(mensagem):
     """
     return True
 
-@bot.message_handler(func=verify) # Essa função é ativada sempre que receber True da função verify()
+@bot.message_handler(func=verify)
 def unknownCommand(mensagem):
     """
     Essa função deve ser a última de todas, porque ela é ativada para QUALQUER mensagem.
     Ela é responsável por pegar todas as mensagens que não caíram nas funções anteriores.
     """
 
-    # Botões
+    # Botões # Essa função é ativada sempre que receber True da função verify()
     helpButton = ReplyKeyboardMarkup(resize_keyboard=True) # Criação
     helpButton.add(KeyboardButton('/home'))
 

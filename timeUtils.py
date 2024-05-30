@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 ## General time conversion
-def getCurrentDay(mensagem, m=True):
+def getWeekDay(date: datetime):
     
     """
     Essa função
@@ -9,39 +9,33 @@ def getCurrentDay(mensagem, m=True):
     - converte os dias em inglês para português brasileiro e retorna o dia
     """
 
-    # Obtém o dia atual
-    if m:
-        diaAtual = datetime.fromtimestamp(mensagem.date).strftime('%A') # Inglês
-    else:
-        diaAtual = datetime.now()
-        diaAtual = diaAtual.strftime('%A') # Inglês
+    currentWeekDay = date.strftime('%A') # Inglês
 
     # Conversão para pt-br
-    if diaAtual == "Monday":
-        diaAtual = "Segunda"
+    if currentWeekDay == "Monday":
+        currentWeekDay = "Segunda"
 
-    elif diaAtual == "Tuesday":
-        diaAtual = "Terça"
+    elif currentWeekDay == "Tuesday":
+        currentWeekDay = "Terça"
 
-    elif diaAtual == "Wednesday":
-        diaAtual = "Quarta"
+    elif currentWeekDay == "Wednesday":
+        currentWeekDay = "Quarta"
 
-    elif diaAtual == "Thursday":
-        diaAtual = "Quinta"
+    elif currentWeekDay == "Thursday":
+        currentWeekDay = "Quinta"
 
-    elif diaAtual == "Friday":
-        diaAtual = "Sexta"
+    elif currentWeekDay == "Friday":
+        currentWeekDay = "Sexta"
 
-    elif diaAtual == "Saturday":
-        diaAtual = "Sábado"
+    elif currentWeekDay == "Saturday":
+        currentWeekDay = "Sábado"
 
-    elif diaAtual == "Sunday":
-        diaAtual = "Domingo"
+    elif currentWeekDay == "Sunday":
+        currentWeekDay = "Domingo"
     
-    return diaAtual
+    return currentWeekDay
 
 def timeToStr(h):
-
     """
     Essa função converte variáveis do tipo datetime para str no formato '%H:%M'
     """

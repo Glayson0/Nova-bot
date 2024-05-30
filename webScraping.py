@@ -17,7 +17,7 @@ rs_camera = Camera()
 
 def webScrapingCamera(restaurante, data):
 
-    URL = f"https://www.prefeitura.unicamp.br/apps/cardapio/index.php?d={data.date()}"
+    URL = f"https://www.prefeitura.unicamp.br/apps/cardapio/index.php?d={data.date()}" ### REMOVER DATAAAAAA
 
     ## Selenium 
 
