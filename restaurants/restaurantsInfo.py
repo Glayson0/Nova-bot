@@ -1,3 +1,7 @@
+"""
+Esse arquivo contém os horários de funcionamento dos restaurantes da Unicamp.
+"""
+
 from datetime import datetime
 from timeUtils import *
 

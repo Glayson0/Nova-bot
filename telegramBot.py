@@ -1,9 +1,11 @@
+"""Este arquivo é para a construção do bot para o Telegram"""
+
 import telebot # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
-from localidadesBandejao import *
+from restaurants.restaurantsInfo import *
 from timeUtils import *
-from bus import *
+from bus.bus import *
 
 # Fazer conexão com a API do bot do Telegram
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"

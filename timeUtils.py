@@ -1,3 +1,7 @@
+"""
+Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
+"""
+
 from datetime import datetime, timedelta
 
 ## General time conversion
