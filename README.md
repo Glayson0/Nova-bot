@@ -5,8 +5,10 @@ Este bot foi desenvolvido para facilitar o acesso dos estudantes da Unicamp aos 
 integrando essas informações no Whatsapp e no Telegram.
 
 ## Estrutura de pastas
-/src    # Código-fonte 
+/src    # Código-fonte
+
 /bin    # Arquivos de execução dos bots
+
 /data   # Dados dos ônibus e restaurantes
 
 ## Funcionalidades
