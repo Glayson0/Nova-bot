@@ -3,7 +3,7 @@
 import telebot # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
-from src.restaurantsInfo import *
+from data.restaurantsInfo import *
 from src.timeUtils import *
 from src.bus import *
 
