@@ -3,9 +3,9 @@
 import telebot # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
-from restaurants.restaurantsInfo import *
-from timeUtils import *
-from bus.bus import *
+from src.restaurantsInfo import *
+from src.timeUtils import *
+from src.bus import *
 
 # Fazer conexão com a API do bot do Telegram
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"

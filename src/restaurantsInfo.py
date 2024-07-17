@@ -3,7 +3,7 @@ Esse arquivo contém os horários de funcionamento dos restaurantes da Unicamp.
 """
 
 from datetime import datetime
-from timeUtils import *
+from src.timeUtils import *
 
 # Dicionários das refeições com cada restaurante e seus respectivos horários de abertura e fechamento
 
