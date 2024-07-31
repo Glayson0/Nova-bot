@@ -1,7 +1,7 @@
 """
 Esse arquivo contém todas as funções relacionadas aos restaurantes da Unicamp.
 """
-from data.restaurantsInfo import *
+from restaurantsInfo import *
 
 def printLocalidades(dia_atual, h_atual, h_atual_time):
 

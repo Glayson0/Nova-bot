@@ -1,8 +1,8 @@
 """
 Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
-from src.timeUtils import *
-from data.busSchedule import *
+from timeUtils import *
+from busSchedule import *
 
 ## Funções relacionadas aos ônibus da moradia
 
