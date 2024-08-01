@@ -36,6 +36,6 @@ nonWorkingDayBusReturnSchedule = [
 ]
 
 dayTypes = {
-    "dia util": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
-    "dia nao-util": (nonWorkingDayBusDepartureSchedule, nonWorkingDayBusReturnSchedule)
+    "working day": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
+    "non working day": (nonWorkingDayBusDepartureSchedule, nonWorkingDayBusReturnSchedule)
 }
