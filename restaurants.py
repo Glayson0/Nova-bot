@@ -15,7 +15,7 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         if h_atual < 830:
             proximaRefeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
-            left = getTimeDifference(h_atual, 730)
+            left = calculateTimeDifference(h_atual, 730)
         elif h_atual < 1400:
             proximaRefeicao = 'o Almoço'
             localidades = almocoLocalidades
@@ -25,7 +25,7 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         elif h_atual > 1945:
             proximaRefeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
-            left = getTimeDifference(h_atual, 730)
+            left = calculateTimeDifference(h_atual, 730)
 
     ##Sabado
     elif dia_atual in 'Sábado':
@@ -40,7 +40,7 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         elif h_atual > 1945:
             proximaRefeicao = 'o Almoço'
             localidades = almocoLocalidades['RS']
-            left = getTimeDifference(h_atual, 730)
+            left = calculateTimeDifference(h_atual, 730)
     
     ##Domingo
     elif (dia_atual in 'Domingo'):
@@ -51,7 +51,7 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
         else:
             proximaRefeicao = 'o Café da Manhã'
             localidades = cafeLocalidades
-            left = getTimeDifference(h_atual, 730)
+            left = calculateTimeDifference(h_atual, 730)
         
     ##Present Results
     if localidades == cafeLocalidades:
@@ -67,9 +67,9 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
     else:
         return f"""
 \- RU ({localidades['RU'][0]} \- {localidades['RU'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RU'][0]), h_atual)} horas para {proximaRefeicao}
+· faltam {calculateTimeDifference(convertToInt(localidades['RU'][0]), h_atual)} horas para {proximaRefeicao}
 \- RA ({localidades['RA'][0]} \- {localidades['RA'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RA'][0]), h_atual)} horas para {proximaRefeicao}
+· faltam {calculateTimeDifference(convertToInt(localidades['RA'][0]), h_atual)} horas para {proximaRefeicao}
 \- RS ({localidades['RS'][0]} \- {localidades['RS'][1]}):
-· faltam {getTimeDifference(convertToInt(localidades['RS'][0]), h_atual)} horas para {proximaRefeicao}
+· faltam {calculateTimeDifference(convertToInt(localidades['RS'][0]), h_atual)} horas para {proximaRefeicao}
         """

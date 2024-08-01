@@ -208,7 +208,7 @@ def tel():
         diaAtual = getCurrentDay(mensagem)
 
         # Obtenção dos horários dos ônibus
-        horarioOnibus_ida1, horarioOnibus_volta1 = nextBus(horaAtual, diaAtual)
+        horarioOnibus_ida1, horarioOnibus_volta1 = nextBusFromTime(horaAtual, diaAtual)
 
         horarioOnibus_ida2, horarioOnibus_volta2 = nextBusFromBus(horarioOnibus_ida1, horarioOnibus_volta1, diaAtual)
 
@@ -238,11 +238,11 @@ def tel():
 
         ## Texto de tempo faltante para cada ônibus
             # Ida
-        tempoProxOnibus_ida1 = formatingBusDiffTime(horarioOnibus_ida1, diffHorarios_ida1)
-        tempoProxOnibus_ida2 = formatingBusDiffTime(horarioOnibus_ida2, diffHorarios_ida2)
+        tempoProxOnibus_ida1 = formatBusTimeDifference(horarioOnibus_ida1, diffHorarios_ida1)
+        tempoProxOnibus_ida2 = formatBusTimeDifference(horarioOnibus_ida2, diffHorarios_ida2)
             # Volta
-        tempoProxOnibus_volta1 = formatingBusDiffTime(horarioOnibus_volta1, diffHorarios_volta1)
-        tempoProxOnibus_volta2 = formatingBusDiffTime(horarioOnibus_volta2, diffHorarios_volta2)
+        tempoProxOnibus_volta1 = formatBusTimeDifference(horarioOnibus_volta1, diffHorarios_volta1)
+        tempoProxOnibus_volta2 = formatBusTimeDifference(horarioOnibus_volta2, diffHorarios_volta2)
 
         ##  Texto do horário de cada ônibus
             # Ida
@@ -296,7 +296,7 @@ def tel():
         diaAtual = getCurrentDay(message)
 
         # Obtenção do horário do próximo ônibus
-        proxOnibus = nextBus(horaAtual, diaAtual, 0)
+        proxOnibus = nextBusFromTime(horaAtual, diaAtual, 0)
 
         ### Lista com todos os horários de Ida
 
@@ -308,10 +308,10 @@ def tel():
         # Dia útil
         if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-            for horario in diaUtil_horariosIda:
+            for horario in weekdayBusDepartureSchedule:
 
                 # Ônibus que já passaram
-                if strToTime(horario) < strToTime(proxOnibus): 
+                if strToDatetime(horario) < strToDatetime(proxOnibus): 
                     pos += 1
                     if pos % 3 == 0:
                         oTodosIdaText += f'~{horario}~\n'
@@ -319,7 +319,7 @@ def tel():
                         oTodosIdaText += f'~{horario}~  \|  '
                 
                 # Próximo ônibus
-                elif strToTime(horario) == strToTime(proxOnibus):
+                elif strToDatetime(horario) == strToDatetime(proxOnibus):
                     pos += 1
                     if pos % 3 == 0:
                         oTodosIdaText += f'*{proxOnibus}*\n'
@@ -337,10 +337,10 @@ def tel():
         # Dia não-útil
         else:
 
-            for horario in diaNaoUtil_horariosIda:
+            for horario in nonWorkingDayBusDepartureSchedule:
 
                 # Ônibus que já passaram
-                if strToTime(horario) < strToTime(proxOnibus): 
+                if strToDatetime(horario) < strToDatetime(proxOnibus): 
                     pos += 1
                     if pos % 3 == 0:
                         oTodosIdaText += f'~{horario}~\n'
@@ -348,7 +348,7 @@ def tel():
                         oTodosIdaText += f'~{horario}~  \|  '
                 
                 # Próximo ônibus
-                elif strToTime(horario) == strToTime(proxOnibus):
+                elif strToDatetime(horario) == strToDatetime(proxOnibus):
                     pos += 1
                     if pos % 3 == 0:
                         oTodosIdaText += f'*{proxOnibus}*\n'
@@ -383,7 +383,7 @@ def tel():
         diaAtual = getCurrentDay(message)
 
         # Obtenção do horário do próximo ônibus
-        proxOnibus = nextBus(horaAtual, diaAtual, 0)
+        proxOnibus = nextBusFromTime(horaAtual, diaAtual, 0)
 
         ### Lista com todos os horários de Ida
 
@@ -395,10 +395,10 @@ def tel():
         # Dia útil
         if diaAtual in 'Segunda Terça Quarta Quinta Sexta':
 
-            for horario in diaUtil_horariosVolta:
+            for horario in weekdayBusReturnSchedule:
 
                 # Ônibus que já passaram
-                if strToTime(horario) < strToTime(proxOnibus): 
+                if strToDatetime(horario) < strToDatetime(proxOnibus): 
                     pos += 1
                     if pos % 3 == 0:
                         horariosVolta += f'~{horario}~\n'
@@ -406,7 +406,7 @@ def tel():
                         horariosVolta += f'~{horario}~  \|  '
                 
                 # Próximo ônibus
-                elif strToTime(horario) == strToTime(proxOnibus):
+                elif strToDatetime(horario) == strToDatetime(proxOnibus):
                     pos += 1
                     if pos % 3 == 0:
                         horariosVolta += f'*{proxOnibus}*\n'
@@ -424,10 +424,10 @@ def tel():
         # Dia não-útil
         else:
 
-            for horario in diaNaoUtil_horariosIda:
+            for horario in nonWorkingDayBusDepartureSchedule:
 
                 # Ônibus que já passaram
-                if strToTime(horario) < strToTime(proxOnibus): 
+                if strToDatetime(horario) < strToDatetime(proxOnibus): 
                     pos += 1
                     if pos % 3 == 0:
                         horariosVolta += f'~{horario}~\n'
@@ -435,7 +435,7 @@ def tel():
                         horariosVolta += f'~{horario}~  \|  '
                 
                 # Próximo ônibus
-                elif strToTime(horario) == strToTime(proxOnibus):
+                elif strToDatetime(horario) == strToDatetime(proxOnibus):
                     pos += 1
                     if pos % 3 == 0:
                         horariosVolta += f'*{proxOnibus}*\n'
