@@ -4,8 +4,12 @@ Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 from timeUtils import *
 from busSchedule import *
 
-def getDayBusSchedule(dayType:str=CURRENT_DAY_TYPE):
-    return dayTypes[dayType][0], dayTypes[dayType][1]
+def getDayBusSchedule(weekday:str=CURRENT_WEEKDAY):
+    dayType = getDayType(weekday)
+    if weekday == 'Domingo':
+        return dayTypes[dayType][0][:25], dayTypes[dayType][1][:25]
+    else:
+        return dayTypes[dayType][0], dayTypes[dayType][1]
 
 def hasAvailableBus(time:datetime.time, busSchedule:list):
     if time < busSchedule[-1]:
