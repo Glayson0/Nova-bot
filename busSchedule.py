@@ -1,6 +1,12 @@
 """
 Esse arquivo contém os horários de funcionamento dos ônibus da Unicamp e suas rotas.
 """
+from timeUtils import strToDatetime
+
+global BUS_FULL_SCHEDULE_PHOTO
+BUS_FULL_SCHEDULE_PHOTO = 'https://i.pinimg.com/originals/cf/ad/04/cfad0446abaf264bf013c3f391276aac.jpg'
+
+# Horários dos ônibus
 
 # Dia útil
 weekdayBusDepartureSchedule = [
@@ -21,7 +27,7 @@ weekdayBusReturnSchedule = [
     '22:35', '22:45', '23:05', '23:15', '23:25', '23:35', '23:45'
 ]
 
-# Dia inútil
+# Dia não-útil
 nonWorkingDayBusDepartureSchedule = [
     '07:10', '07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '11:00', '11:10', '11:20',
     '11:30', '11:40', '11:50', '12:00', '12:10', '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', 
@@ -34,6 +40,12 @@ nonWorkingDayBusReturnSchedule = [
     '11:50', '12:00', '12:10', '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', '13:30', '13:40',
     '13:50', '14:00', '17:40', '17:50', '18:00', '18:10', '18:20', '18:30', '18:40', '18:50', '19:00'
 ]
+
+# Conversão dos horários em datetime
+weekdayBusDepartureSchedule = list(map(strToDatetime, weekdayBusDepartureSchedule))
+weekdayBusReturnSchedule = list(map(strToDatetime, weekdayBusReturnSchedule))
+nonWorkingDayBusDepartureSchedule = list(map(strToDatetime, nonWorkingDayBusDepartureSchedule))
+nonWorkingDayBusReturnSchedule = list(map(strToDatetime, nonWorkingDayBusReturnSchedule))
 
 dayTypes = {
     "working day": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
