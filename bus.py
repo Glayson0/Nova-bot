@@ -88,17 +88,19 @@ def createNextBusMessage() -> str:
             time = f"{time[0]} \({time[1]}\)"
         timesOutput.append(time)
 
-    print(timesOutput)
-
     # String formatada
     next2busText = f"""
-Ida \(Moradia \-\> Unicamp\):
-01\) {timesOutput[0]}
-02\) {timesOutput[1]}
+🚌 HORÁRIOS DOS PRÓXIMOS ÔNIBUS
 
-Volta \(Unicamp \-\> Moradia\):
-01\) {timesOutput[2]}
-02\) {timesOutput[3]}
+⌚ Horário atual: {datetimeToStr(CURRENT_DATETIME)}
+
+➡️ IDA \(Moradia \-\> Unicamp\):
+    01\) {timesOutput[0]}
+    02\) {timesOutput[1]}
+
+⬅️ VOLTA \(Unicamp \-\> Moradia\):
+    01\) {timesOutput[2]}
+    02\) {timesOutput[3]}
 """
     return next2busText
 
@@ -106,7 +108,7 @@ def createAvailableBusListMessage(busSchedule:list) -> str:
     """Cria uma string com todos os horários do dia de ônibus, riscando os horários que já passaram e destacando o próximo."""
 
     nextBus = nextBusFromNow(busSchedule)
-    availableBusScheduleListText = ""
+    availableBusScheduleListText = "LISTA DE ÔNIBUS DISPONÍVEIS\n\n"
 
     pos = 0
     for time in busSchedule:
