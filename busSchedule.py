@@ -1,9 +1,8 @@
 """
 Esse arquivo contém os horários de funcionamento dos ônibus da Unicamp e suas rotas.
 """
-from timeUtils import str_to_time
+from time_utils import str_to_time
 
-global BUS_FULL_SCHEDULE_PHOTO
 BUS_FULL_SCHEDULE_PHOTO = 'https://i.pinimg.com/originals/cf/ad/04/cfad0446abaf264bf013c3f391276aac.jpg'
 
 # Horários dos ônibus
@@ -48,6 +47,6 @@ nonWorkingDayBusDepartureSchedule = list(map(str_to_time, nonWorkingDayBusDepart
 nonWorkingDayBusReturnSchedule = list(map(str_to_time, nonWorkingDayBusReturnSchedule))
 
 dayTypes = {
-    "working day": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
-    "non working day": (nonWorkingDayBusDepartureSchedule, nonWorkingDayBusReturnSchedule)
+    "business day": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
+    "weekend": (nonWorkingDayBusDepartureSchedule, nonWorkingDayBusReturnSchedule)
 }

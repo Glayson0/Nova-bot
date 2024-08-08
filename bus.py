@@ -2,23 +2,23 @@
 Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
 from busSchedule import *
-from timeUtils import *
+from time_utils import *
 
 # Funções auxiliares
 
 def getDayBusSchedule(weekday:str=CURRENT_WEEKDAY) -> tuple:
     """Retorna uma tupla com as listas de ida e volta dos ônibus dependendo do dia atual."""
-    dayType = is_business_day(weekday)
-    if weekday == 'Domingo':
-        return dayTypes[dayType][0][:25], dayTypes[dayType][1][:25]
-    else:
-        return dayTypes[dayType][0], dayTypes[dayType][1]
+    day_type = is_business_day(weekday)
+    day_type = "business day" if day_type else "weekend"
+
+    if weekday == 'domingo':
+        return dayTypes[day_type][0][:25], dayTypes[day_type][1][:25]
+
+    return dayTypes[day_type][0], dayTypes[day_type][1]
 
 def hasAvailableBus(time:datetime, busSchedule:list) -> bool:
     """Checa se há ônibus disponível no dia após o horário em que a função foi chamada."""
-    if time < busSchedule[-1]:
-        return True
-    return False
+    return time < busSchedule[-1]
 
 def nextBusFromNow(busSchedule:list, time:datetime=CURRENT_DATETIME) -> datetime:
     """Retorna o horário em datetime do próximo ônibus a partir do horário em que a função foi chamada."""
@@ -26,6 +26,7 @@ def nextBusFromNow(busSchedule:list, time:datetime=CURRENT_DATETIME) -> datetime
         for busTime in busSchedule:
             if time <= busTime:
                 return busTime
+
     return None
 
 def getAvailableBusSchedule(busSchedule:list, time:datetime=CURRENT_DATETIME) -> list:
@@ -74,9 +75,9 @@ def createNextBusMessage() -> str:
 
     # Substituir horários com valor None por "Acabaram os ônibus por hoje!"
     times = [
-        [dt_to_str(nextDepartureBusTime1), timeForNextDepartureBus1], 
-        [dt_to_str(nextDepartureBusTime2), timeForNextDepartureBus2], 
-        [dt_to_str(nextReturnBusTime1), timeForNextReturnBus1], 
+        [dt_to_str(nextDepartureBusTime1), timeForNextDepartureBus1],
+        [dt_to_str(nextDepartureBusTime2), timeForNextDepartureBus2],
+        [dt_to_str(nextReturnBusTime1), timeForNextReturnBus1],
         [dt_to_str(nextReturnBusTime2), timeForNextReturnBus2]
     ]
 
@@ -95,7 +96,7 @@ def createNextBusMessage() -> str:
 ⌚ Horário atual: {dt_to_str(CURRENT_DATETIME)}
 
 ➡️ IDA \(Moradia \-\> Unicamp\):
-    01\) \) \) \) \) \) \) {timesOutput[0]}
+    01\) \) \) \) \) \) \) \) \) \) \) \) \) \) \) \) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) {timesOutput[0]}
     02\) {timesOutput[1]}
 
 ⬅️ VOLTA \(Unicamp \-\> Moradia\):
@@ -114,14 +115,14 @@ def createAvailableBusListMessage(busSchedule:list) -> str:
     for time in busSchedule:
 
         # Ônibus que já passaram
-        if time < nextBus: 
+        if time < nextBus:
             time = dt_to_str(time)
             pos += 1
             if pos % 3 == 0:
                 availableBusScheduleListText += f'~{time}~\n'
             else:
                 availableBusScheduleListText += f'~{time}~  \|  '
-        
+
         # Próximo ônibus
         elif time == nextBus:
             pos += 1
@@ -129,7 +130,7 @@ def createAvailableBusListMessage(busSchedule:list) -> str:
                 availableBusScheduleListText += f'*{dt_to_str(nextBus)}*\n'
             else:
                 availableBusScheduleListText += f'*{dt_to_str(nextBus)}*  \|  '
-        
+
         # Ônibus que ainda não passaram
         else:
             time = dt_to_str(time)

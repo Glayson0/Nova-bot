@@ -4,38 +4,24 @@ Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
 
 from datetime import datetime, timedelta
 
+# Use locale to set the default locale
+# that converts literals to portuguese
 
-# Funções para as variáveis globais
-def translate_week_day(weekday: str) -> str:
-    """Traduz o dia da semana do inglês para português brasileiro."""
-
-    translation_map = {
-        "Monday": "Segunda",
-        "Tuesday": "Terça",
-        "Wednesday": "Quarta",
-        "Thursday": "Quinta",
-        "Friday": "Sexta",
-        "Saturday": "Sábado",
-        "Sunday": "Domingo"
-    }
-
-    return translation_map.get(weekday, weekday)
-
-def is_business_day (day: str) -> str:
-    """Retorna se o dia é útil ou é não-util."""
-    if day in 'Segunda Terça Quarta Quinta Sexta':
-        return "working day"
-
-    return "non working day"
+def is_business_day (day: int) -> bool:
+    """
+        Receives days as int, Monday = 0, Tuesday = 1, ..., Sunday = 6
+        and Returns True if it is a business day, False otherwise
+    """
+    return day < 5
 
 # Variáveis globais
 CURRENT_DATETIME = datetime.now()  # tipo: datetime (YYYY-MM-DD HH:MM:SS.mmmmm)
 
 CURRENT_TIME = CURRENT_DATETIME.time()  # tipo: datetime (YYYY-MM-DD HH:MM:SS.mmmmm)
 
-CURRENT_WEEKDAY = translate_week_day(CURRENT_DATETIME.strftime('%A'))
+CURRENT_WEEKDAY = CURRENT_DATETIME.strftime('%A')
 
-CURRENT_DAY_TYPE = is_business_day(CURRENT_WEEKDAY)
+CURRENT_DAY_TYPE = is_business_day(CURRENT_DATETIME.weekday())
 
 # Funções
 def dt_to_str(time: datetime) -> str:
@@ -57,12 +43,12 @@ def calc_time_diff(
     if type(startTime) == str:
         startTime = str_to_time(startTime)
 
-    timeDelta = endTime - timedelta(hours=startTime.hour, minutes=startTime.minute)
+    time_diff = endTime - timedelta(hours=startTime.hour, minutes=startTime.minute)
 
     if formated:
-        if timeDelta.hour > 0:
-            return f'{timeDelta.hour} hr e {timeDelta.minute} min'
-        else:
-            return f'{timeDelta.minute} min'
-    else:
-        return timeDelta
+        if time_diff.hour:
+            return time_diff.strftime("%H hr e %M min")
+
+        return time_diff.strftime("%M min")
+    
+    return time_diff

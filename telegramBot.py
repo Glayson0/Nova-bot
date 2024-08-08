@@ -1,12 +1,14 @@
 """Este arquivo é para a construção do bot para o Telegram"""
 
-import telebot # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
-from restaurantsInfo import *
-from timeUtils import *
+
+import telebot  # Biblioteca pyTelegramBotAPI para acessar a API do bot do Telegram
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 from bus import *
+from restaurantsInfo import *
 from texts import *
+from time_utils import *
 
 # Fazer conexão com a API do bot do Telegram
 CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
@@ -60,7 +62,7 @@ def help(mensagem):
     )
 
     # Envio de mensagem
-    bot.send_message(mensagem.chat.id, 'Entendido\! Aqui está uma lista com os comandos principais:')
+    bot.send_message(mensagem.chat.id, r'Entendido\! Aqui está uma lista com os comandos principais:')
     bot.send_message(mensagem.chat.id, helpText, reply_markup=helpButtons)
 
 # Comando /onibus
@@ -81,7 +83,7 @@ def onibus(mensagem):
     )
 
     # Envio de mensagem
-    bot.reply_to(mensagem, 'Okay\! Aqui estão os comandos para os ônibus da moradia:')
+    bot.reply_to(mensagem, r'Okay\! Aqui estão os comandos para os ônibus da moradia:')
     bot.send_message(mensagem.chat.id, onibusText, reply_markup=onibusButtons)
 
 # Comando /bandejão
@@ -101,7 +103,7 @@ def bandejao(mensagem):
         InlineKeyboardButton('Tempo para a próxima refeição', callback_data='cb_bJaPode'))
 
     # Envio de mensagem
-    bot.reply_to(mensagem, 'Certo\! Aqui estão os comandos para o bandejão:')
+    bot.reply_to(mensagem, r'Certo\! Aqui estão os comandos para o bandejão:')
     bot.send_message(mensagem.chat.id, bandejaoText, reply_markup=bandejaoButtons)
 
 # Comando /bCardapio
@@ -118,7 +120,7 @@ def bCardapio(mensagem):
     cardapioButtons.add(KeyboardButton('/bVegano'))
 
     # Envio de mensagem
-    bot.reply_to(mensagem, 'Ta bom\! Qual cardápio deseja ver?')
+    bot.reply_to(mensagem, r'Ta bom\! Qual cardápio deseja ver?')
     bot.send_message(mensagem.chat.id, cardapioText, reply_markup=cardapioButtons)
 
 
@@ -145,7 +147,7 @@ def oProx(mensagem):
     next2busText = createNextBusMessage()
 
     # Envio da mensagem no chat
-    bot.reply_to(mensagem, "Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
+    bot.reply_to(mensagem, r"Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
     bot.send_message(mensagem.chat.id, next2busText)
 
 # Comando /oTodosIda
@@ -156,7 +158,7 @@ def oTodosIda(message):
     availableBusScheduleListText = createAvailableBusListMessage(departureBusSchedule)
 
     # Envio de mensagem
-    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.reply_to(message, r'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, availableBusScheduleListText)
 
 # Comando /oTodosVolta
@@ -167,7 +169,7 @@ def oTodosVolta(message):
     availableBusScheduleListText = createAvailableBusListMessage(returnBusSchedule)
 
     # Envio de mensagem
-    bot.reply_to(message, 'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
+    bot.reply_to(message, r'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
     bot.send_message(message.chat.id, availableBusScheduleListText)
 
 
@@ -200,7 +202,7 @@ def bandejao(mensagem):
     bot.send_message(mensagem.chat.id,
 f"""🍽️🥛🍎 HORÁRIOS DE REFEIÇÃO 🍽️🥛🍎
 
-Dia atual: {diaAtual}
+Dia atual: ual: l: ual: {diaAtual}
 Horário atual: {horaAtual_formated}
 {printLocalidades(diaAtual, horaAtual, horaAtual_time)}    
 """)
@@ -239,7 +241,7 @@ def unknownCommand(mensagem):
     helpButton.add(KeyboardButton('/help'))
 
     # Envio de mensagem
-    bot.reply_to(mensagem, 'Hmmm, eu não conheço esse comando\.') 
-    bot.send_message(mensagem.chat.id, 'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
+    bot.reply_to(mensagem, r'Hmmm, eu não conheço esse comando\.') 
+    bot.send_message(mensagem.chat.id, r'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.', reply_markup=helpButton)
 
 bot.polling()
