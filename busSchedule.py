@@ -99,6 +99,6 @@ def create_bus_schedule(
     return bus_schedule
 
 BUS_SCHEDULER = {
-    "bussines_day": create_bus_schedule(weekdayBusDeparture, weekdayBusReturn),
+    "business_day": create_bus_schedule(weekdayBusDeparture, weekdayBusReturn),
     "weekend": create_bus_schedule(nonWorkingDayBusDeparture, nonWorkingDayBusReturn, True)
 }
