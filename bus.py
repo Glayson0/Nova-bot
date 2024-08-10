@@ -1,15 +1,13 @@
+"""Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
-Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
-"""
-from bus_schedule import dayTypes
+from bus_schedule import day_types
 from time_utils import CURRENT_DATETIME, CURRENT_WEEKDAY, is_business_day, \
     calc_time_diff, dt_to_str
 from datetime import datetime
 
+
 # Funções auxiliares
-
-
-def getDayBusSchedule(weekday: str = CURRENT_WEEKDAY) -> tuple:
+def get_day_bus_schedule(weekday: str = CURRENT_WEEKDAY) -> tuple:
     """Retorna uma tupla com as listas de ida e volta dos ônibus dependendo do
     dia atual.
     """
@@ -17,43 +15,43 @@ def getDayBusSchedule(weekday: str = CURRENT_WEEKDAY) -> tuple:
     day_type = "business day" if day_type else "weekend"
 
     if weekday == 'domingo':
-        return dayTypes[day_type][0][:25], dayTypes[day_type][1][:25]
+        return day_types[day_type][0][:25], day_types[day_type][1][:25]
 
-    return dayTypes[day_type][0], dayTypes[day_type][1]
+    return day_types[day_type][0], day_types[day_type][1]
 
 
-def hasAvailableBus(time: datetime, busSchedule: list) -> bool:
+def has_available_bus(time: datetime, bus_schedule: list) -> bool:
     """Checa se há ônibus disponível no dia após o horário em que a função foi
     chamada.
     """
-    return time < busSchedule[-1]
+    return time < bus_schedule[-1]
 
 
-def nextBusFromNow(busSchedule: list,
-                   time: datetime = CURRENT_DATETIME) -> datetime:
+def next_bus_from_now(bus_schedule: list,
+                      time: datetime = CURRENT_DATETIME) -> datetime:
     """Retorna o horário em datetime do próximo ônibus a partir do horário em
     que a função foi chamada.
     """
-    if hasAvailableBus(CURRENT_DATETIME, busSchedule):
-        for busTime in busSchedule:
+    if has_available_bus(CURRENT_DATETIME, bus_schedule):
+        for busTime in bus_schedule:
             if time <= busTime:
                 return busTime
 
     return None
 
 
-def getAvailableBusSchedule(busSchedule: list,
-                            time: datetime = CURRENT_DATETIME) -> list:
+def get_available_bus_schedule(bus_schedule: list,
+                               time: datetime = CURRENT_DATETIME) -> list:
     """Retorna uma lista com apenas os ônibus disponíveis no dia a partir do
     horário em que a função foi chamada.
     """
-    availableBusSchedule = []
+    available_bus_schedule = []
 
-    for busTime in busSchedule:
-        if time >= busTime:
-            availableBusSchedule.append(busTime)
+    for bus_time in bus_schedule:
+        if time >= bus_time:
+            available_bus_schedule.append(bus_time)
 
-    return availableBusSchedule
+    return available_bus_schedule
 
 # Funções principais
 
@@ -62,110 +60,113 @@ def createNextBusMessage() -> str:
     """Cria uma string com os horários dos conjuntos ida-volta dos ônibus da
     moradia.
     """
-    departureBusSchedule, returnBusSchedule = \
-        getDayBusSchedule(CURRENT_WEEKDAY)
+    departure_bus_schedule, return_bus_schedule = \
+        get_day_bus_schedule(CURRENT_WEEKDAY)
 
     # Obtenção dos próximo 2 horários dos ônibus
-    nextDepartureBusTime1 = nextBusFromNow(departureBusSchedule)
-    nextDepartureBusTime2 = nextBusFromNow(departureBusSchedule,
-                                           nextDepartureBusTime1)
-    nextReturnBusTime1 = nextBusFromNow(returnBusSchedule)
-    nextReturnBusTime2 = nextBusFromNow(returnBusSchedule, nextReturnBusTime1)
+    next_departure_bus_time_1 = next_bus_from_now(departure_bus_schedule)
+    next_departure_bus_time_2 = next_bus_from_now(departure_bus_schedule,
+                                                  next_departure_bus_time_1)
+    next_return_bus_time_1 = next_bus_from_now(return_bus_schedule)
+    next_return_bus_time_2 = next_bus_from_now(return_bus_schedule,
+                                               next_return_bus_time_1)
 
     # Tempo restante para os horários - IDA
-    if nextReturnBusTime1:
-        timeForNextDepartureBus1 = calc_time_diff(nextDepartureBusTime1,
-                                                  CURRENT_DATETIME)
-        if nextReturnBusTime2:
-            timeForNextDepartureBus2 = calc_time_diff(nextDepartureBusTime2,
-                                                      CURRENT_DATETIME)
+    if next_return_bus_time_1:
+        time_for_next_departure_bus_1 = calc_time_diff(next_return_bus_time_1,
+                                                       CURRENT_DATETIME)
+        if next_return_bus_time_2:
+            time_for_next_departure_bus_2 = calc_time_diff(
+                next_return_bus_time_2, CURRENT_DATETIME)
         else:
-            timeForNextDepartureBus2 = None
+            time_for_next_departure_bus_2 = None
     else:
-        timeForNextDepartureBus1 = None
-        timeForNextDepartureBus2 = None
+        time_for_next_departure_bus_1 = None
+        time_for_next_departure_bus_2 = None
 
     # Tempo restante para os horários - VOLTA
-    if nextReturnBusTime1:
-        timeForNextReturnBus1 = calc_time_diff(nextReturnBusTime1,
-                                               CURRENT_DATETIME)
-        if nextReturnBusTime2:
-            timeForNextReturnBus2 = calc_time_diff(nextReturnBusTime1,
-                                                   CURRENT_DATETIME)
+    if next_return_bus_time_1:
+        time_for_next_return_bus_1 = calc_time_diff(next_return_bus_time_1,
+                                                    CURRENT_DATETIME)
+        if next_return_bus_time_2:
+            time_for_next_return_bus_1 = calc_time_diff(next_return_bus_time_1,
+                                                        CURRENT_DATETIME)
         else:
-            timeForNextReturnBus2 = None
+            time_for_next_return_bus_2 = None
     else:
-        timeForNextReturnBus1 = None
-        timeForNextReturnBus2 = None
+        time_for_next_return_bus_1 = None
+        time_for_next_return_bus_2 = None
 
     # Substituir horários com valor None por "Acabaram os ônibus por hoje!"
     times = [
-        [dt_to_str(nextDepartureBusTime1), timeForNextDepartureBus1],
-        [dt_to_str(nextDepartureBusTime2), timeForNextDepartureBus2],
-        [dt_to_str(nextReturnBusTime1), timeForNextReturnBus1],
-        [dt_to_str(nextReturnBusTime2), timeForNextReturnBus2]
+        [dt_to_str(next_departure_bus_time_1), time_for_next_departure_bus_1],
+        [dt_to_str(next_departure_bus_time_2), time_for_next_departure_bus_2],
+        [dt_to_str(next_return_bus_time_1), time_for_next_return_bus_1],
+        [dt_to_str(next_return_bus_time_2), time_for_next_return_bus_2]
     ]
 
-    timesOutput = []
+    times_output = []
     for time in times:
         if time[0] is None:
             time = r"Acabaram os ônibus por hoje\!"
         else:
             time = f"{time[0]} \({time[1]}\)"
-        timesOutput.append(time)
+        times_output.append(time)
 
     # String formatada
-    next2busText = f"""
+    next_2_bus_text = f"""
 🚌 HORÁRIOS DOS PRÓXIMOS ÔNIBUS
 
 ⌚ Horário atual: {dt_to_str(CURRENT_DATETIME)}
 
 ➡️ IDA \(Moradia \-\> Unicamp\):
     01\) \) \) \) \) \) \) \) \) \) \) \) \) \) \) \) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) {timesOutput[0]}
-    02\) {timesOutput[1]}
+    02\) {times_output[1]}
 
 ⬅️ VOLTA \(Unicamp \-\> Moradia\):
-    01\) {timesOutput[2]}
-    02\) {timesOutput[3]}
+    01\) {times_output[2]}
+    02\) {times_output[3]}
 """
-    return next2busText
+    return next_2_bus_text
 
 
-def createAvailableBusListMessage(busSchedule: list) -> str:
+def create_available_bus_list_message(bus_schedule: list) -> str:
     """Cria uma string com todos os horários do dia de ônibus, riscando os
     horários que já passaram e destacando o próximo.
     """
 
-    nextBus = nextBusFromNow(busSchedule)
-    availableBusScheduleListText = "LISTA DE ÔNIBUS DISPONÍVEIS\n\n"
+    next_bus = next_bus_from_now(bus_schedule)
+    available_bus_schedule_list_text = "LISTA DE ÔNIBUS DISPONÍVEIS\n\n"
 
     pos = 0
-    for time in busSchedule:
+    for time in bus_schedule:
 
         # Ônibus que já passaram
-        if time < nextBus:
+        if time < next_bus:
             time = dt_to_str(time)
             pos += 1
             if pos % 3 == 0:
-                availableBusScheduleListText += f'~{time}~\n'
+                available_bus_schedule_list_text += f'~{time}~\n'
             else:
-                availableBusScheduleListText += f'~{time}~  \|  '
+                available_bus_schedule_list_text += f'~{time}~  \|  '
 
         # Próximo ônibus
-        elif time == nextBus:
+        elif time == next_bus:
             pos += 1
             if pos % 3 == 0:
-                availableBusScheduleListText += f'*{dt_to_str(nextBus)}*\n'
+                available_bus_schedule_list_text += \
+                    f'*{dt_to_str(next_bus)}*\n'
             else:
-                availableBusScheduleListText += f'*{dt_to_str(nextBus)}*  \|  '
+                available_bus_schedule_list_text += \
+                    f'*{dt_to_str(next_bus)}*  \|  '
 
         # Ônibus que ainda não passaram
         else:
             time = dt_to_str(time)
             pos += 1
             if pos % 3 == 0:
-                availableBusScheduleListText += f'{time}\n'
+                available_bus_schedule_list_text += f'{time}\n'
             else:
-                availableBusScheduleListText += f'{time}  \|  '
+                available_bus_schedule_list_text += f'{time}  \|  '
 
-    return availableBusScheduleListText
+    return available_bus_schedule_list_text

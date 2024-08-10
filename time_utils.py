@@ -1,5 +1,4 @@
-"""
-Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
+"""Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
 """
 
 from datetime import datetime, timedelta

@@ -8,7 +8,7 @@ BUS_FULL_SCHEDULE_PHOTO = 'https://i.pinimg.com/originals/cf/ad/04/cfad0446abaf2
 # Horários dos ônibus
 
 # Dia útil
-weekdayBusDepartureSchedule = [
+weekday_bus_departure_schedule = [
     '06:30', '06:45', '06:50', '07:00', '07:10', '07:15', '07:20', '07:25',
     '07:35', '07:40', '07:45', '08:00', '08:10', '08:20', '08:30', '08:40',
     '08:50', '09:00', '09:10', '09:20', '09:30', '09:40', '09:45', '10:05',
@@ -20,7 +20,7 @@ weekdayBusDepartureSchedule = [
     '19:15', '19:25', '19:35', '19:50', '19:55', '20:10', '20:30', '20:45'
 ]
 
-weekdayBusReturnSchedule = [
+weekday_bus_return_schedule = [
     '07:20', '07:40', '08:00', '08:25', '08:45', '09:00', '09:30', '09:50',
     '10:00', '10:15', '10:40', '11:05', '11:15', '11:30', '11:45', '11:55',
     '12:00', '12:20', '12:30', '12:45', '12:50', '13:00', '13:15', '13:30',
@@ -33,7 +33,7 @@ weekdayBusReturnSchedule = [
 ]
 
 # Dia não-útil
-nonWorkingDayBusDepartureSchedule = [
+non_working_day_bus_departure_schedule = [
     '07:10', '07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20',
     '11:00', '11:10', '11:20', '11:30', '11:40', '11:50', '12:00', '12:10',
     '12:20', '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', '13:30',
@@ -41,7 +41,7 @@ nonWorkingDayBusDepartureSchedule = [
     '18:30', '18:40', '18:50'
 ]
 
-nonWorkingDayBusReturnSchedule = [
+non_working_day_bus_return_schedule = [
     '07:20', '07:30', '07:40', '07:50', '08:00', '08:10', '08:20', '08:30',
     '11:10', '11:20', '11:30', '11:40', '11:50', '12:00', '12:10', '12:20',
     '12:30', '12:40', '12:50', '13:00', '13:10', '13:20', '13:30', '13:40',
@@ -50,16 +50,18 @@ nonWorkingDayBusReturnSchedule = [
 ]
 
 # Conversão dos horários em datetime
-weekdayBusDepartureSchedule = list(map(str_to_time,
-                                       weekdayBusDepartureSchedule))
-weekdayBusReturnSchedule = list(map(str_to_time, weekdayBusReturnSchedule))
-nonWorkingDayBusDepartureSchedule = list(
-    map(str_to_time, nonWorkingDayBusDepartureSchedule))
-nonWorkingDayBusReturnSchedule = list(map(str_to_time,
-                                          nonWorkingDayBusReturnSchedule))
+weekday_bus_departure_schedule = list(map(str_to_time,
+                                          weekday_bus_departure_schedule))
+weekday_bus_return_schedule = list(map(str_to_time,
+                                       weekday_bus_return_schedule))
+non_working_day_bus_departure_schedule = list(
+    map(str_to_time, non_working_day_bus_departure_schedule))
+non_working_day_bus_return_schedule = list(
+    map(str_to_time, non_working_day_bus_return_schedule))
 
-dayTypes = {
-    "business day": (weekdayBusDepartureSchedule, weekdayBusReturnSchedule),
-    "weekend": (nonWorkingDayBusDepartureSchedule,
-                nonWorkingDayBusReturnSchedule)
+day_types = {
+    "business day": (weekday_bus_departure_schedule,
+                     weekday_bus_return_schedule),
+    "weekend": (non_working_day_bus_departure_schedule,
+                non_working_day_bus_return_schedule)
 }

@@ -5,9 +5,10 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     KeyboardButton
 from telebot.replymarkup import ReplyKeyboardMarkup
 
-from bus import getDayBusSchedule, createAvailableBusListMessage, \
-    createNextBusMessage
-from texts import startText, helpText, onibusText, bandejaoText, cardapioText
+from bus import get_day_bus_schedule, create_available_bus_list_message, \
+    create_next_bus_message
+from texts import start_text, help_text, onibus_text, bandejao_text, \
+    cardapio_text
 from time_utils import CURRENT_WEEKDAY
 from bus_schedule import BUS_FULL_SCHEDULE_PHOTO
 
@@ -35,13 +36,13 @@ mesmo trigger, apenas aquela que está mais acima será ativada.
 def start(mensagem):
 
     # Botões
-    startButton = InlineKeyboardMarkup(row_width=1)
-    startButton.add(InlineKeyboardButton('/help', callback_data="cb_help"))
+    start_button = InlineKeyboardMarkup(row_width=1)
+    start_button.add(InlineKeyboardButton('/help', callback_data="cb_help"))
 
     # Envio de mensagem
     bot.send_message(mensagem.chat.id,
                      f'👋 Olá, {mensagem.chat.first_name}\! Como vai?')
-    bot.send_message(mensagem.chat.id, startText, reply_markup=startButton)
+    bot.send_message(mensagem.chat.id, start_text, reply_markup=start_button)
 
 
 # Comando /help
@@ -53,8 +54,8 @@ def help(mensagem):
     """
 
     # Botões
-    helpButtons = InlineKeyboardMarkup(row_width=1)
-    helpButtons.add(
+    help_buttons = InlineKeyboardMarkup(row_width=1)
+    help_buttons.add(
         InlineKeyboardButton('Comandos ônibus', callback_data='cb_onibus'),
         InlineKeyboardButton('Comandos bandejao', callback_data='cb_bandejao'),
         InlineKeyboardButton('Todos os comandos', callback_data='cb_tudo'),
@@ -63,7 +64,7 @@ def help(mensagem):
     # Envio de mensagem
     bot.send_message(mensagem.chat.id,
                      r'Entendido\! Aqui está uma lista com os comandos principais:')
-    bot.send_message(mensagem.chat.id, helpText, reply_markup=helpButtons)
+    bot.send_message(mensagem.chat.id, help_text, reply_markup=help_buttons)
 
 
 # --------------------- #
@@ -79,8 +80,8 @@ def onibus(mensagem):
     """
 
     # Botões
-    onibusButtons = InlineKeyboardMarkup(row_width=2)
-    onibusButtons.add(
+    onibus_buttons = InlineKeyboardMarkup(row_width=2)
+    onibus_buttons.add(
         InlineKeyboardButton('Próximo ônibus',
                              callback_data="cb_o_prox"),
         InlineKeyboardButton('Todos os ônibus de IDA',
@@ -92,12 +93,13 @@ def onibus(mensagem):
     # Envio de mensagem
     bot.reply_to(mensagem,
                  r'Okay\! Aqui estão os comandos para os ônibus da moradia:')
-    bot.send_message(mensagem.chat.id, onibusText, reply_markup=onibusButtons)
+    bot.send_message(mensagem.chat.id, onibus_text,
+                     reply_markup=onibus_buttons)
 
 
 # Comando /oTodos
 @bot.message_handler(commands=["oTodos"])
-def oTodos(mensagem):
+def o_todos(mensagem):
     """Envia uma foto no chat da tabela de horários dos ônibus da moradia."""
 
     bot.send_message(mensagem.chat.id,
@@ -107,39 +109,41 @@ def oTodos(mensagem):
 
 # Comando /oProx
 @bot.message_handler(commands=["oProx"])
-def oProx(mensagem):
-    next2busText = createNextBusMessage()
+def o_prox(mensagem):
+    next_2_bus_text = create_next_bus_message()
 
     # Envio da mensagem no chat
     bot.reply_to(mensagem,
                  r"Claro\! Aqui estão os horários dos próximos ônibus da moradia:")
-    bot.send_message(mensagem.chat.id, next2busText)
+    bot.send_message(mensagem.chat.id, next_2_bus_text)
 
 
 # Comando /oTodosIda
 @bot.message_handler(commands=["oTodosIda"])
-def oTodosIda(message):
+def o_todos_ida(message):
 
-    departureBusSchedule, _ = getDayBusSchedule(CURRENT_WEEKDAY)
-    availableBusScheduleListText = createAvailableBusListMessage(departureBusSchedule)
+    departure_bus_schedule, _ = get_day_bus_schedule(CURRENT_WEEKDAY)
+    available_bus_schedule_list_text = create_available_bus_list_message(
+        departure_bus_schedule)
 
     # Envio de mensagem
     bot.reply_to(message,
                  r'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
-    bot.send_message(message.chat.id, availableBusScheduleListText)
+    bot.send_message(message.chat.id, available_bus_schedule_list_text)
 
 
 # Comando /oTodosVolta
 @bot.message_handler(commands=["oTodosVolta"])
-def oTodosVolta(message):
+def o_todos_volta(message):
 
-    _, returnBusSchedule = getDayBusSchedule(CURRENT_WEEKDAY)
-    availableBusScheduleListText = createAvailableBusListMessage(returnBusSchedule)
+    _, return_bus_schedule = get_day_bus_schedule(CURRENT_WEEKDAY)
+    available_bus_schedule_list_text = create_available_bus_list_message(
+        return_bus_schedule)
 
     # Envio de mensagem
     bot.reply_to(message,
                  r'Ta bom\! Aqui está a lista dos ônibus de Ida de hoje\!')
-    bot.send_message(message.chat.id, availableBusScheduleListText)
+    bot.send_message(message.chat.id, available_bus_schedule_list_text)
 
 
 # --------------------- #
@@ -155,8 +159,8 @@ def bandejao(mensagem):
     """
 
     # Botões
-    bandejaoButtons = InlineKeyboardMarkup(row_width=2)
-    bandejaoButtons.add(
+    bandejao_buttons = InlineKeyboardMarkup(row_width=2)
+    bandejao_buttons.add(
         InlineKeyboardButton('Horários de cada restaurante',
                              callback_data='cb_bHoras'),
         InlineKeyboardButton('Ver cardápio do dia',
@@ -166,26 +170,26 @@ def bandejao(mensagem):
 
     # Envio de mensagem
     bot.reply_to(mensagem, r'Certo\! Aqui estão os comandos para o bandejão:')
-    bot.send_message(mensagem.chat.id, bandejaoText,
-                     reply_markup=bandejaoButtons)
+    bot.send_message(mensagem.chat.id, bandejao_text,
+                     reply_markup=bandejao_buttons)
 
 
 # Comando /bCardapio
 @bot.message_handler(commands=["bCardapio"])
-def bCardapio(mensagem):
+def b_cardapio(mensagem):
     """Envia uma mensagem no chat com as opções de cardápio (Tradicional e
     Vegano) para o usuário escolher.
     """
 
     # Botões
-    cardapioButtons = ReplyKeyboardMarkup(resize_keyboard=True)
-    cardapioButtons.add(KeyboardButton('/bTradicional'))
-    cardapioButtons.add(KeyboardButton('/bVegano'))
+    cardapio_buttons = ReplyKeyboardMarkup(resize_keyboard=True)
+    cardapio_buttons.add(KeyboardButton('/bTradicional'))
+    cardapio_buttons.add(KeyboardButton('/bVegano'))
 
     # Envio de mensagem
     bot.reply_to(mensagem, r'Ta bom\! Qual cardápio deseja ver?')
-    bot.send_message(mensagem.chat.id, cardapioText,
-                     reply_markup=cardapioButtons)
+    bot.send_message(mensagem.chat.id, cardapio_text,
+                     reply_markup=cardapio_buttons)
 
 # --------------------- #
 #        Handlers
@@ -214,7 +218,7 @@ def callback_query(call):
 
 
 @bot.message_handler(func=verify)  # Função ativada por verify()
-def unknownCommand(mensagem):
+def unknown_command(mensagem):
     """Essa função deve ser a última de todas, porque ela é ativada para
     QUALQUER mensagem.
     Ela é responsável por pegar todas as mensagens que não caíram nas funções
@@ -222,14 +226,14 @@ def unknownCommand(mensagem):
     """
 
     # Botões
-    helpButton = ReplyKeyboardMarkup(resize_keyboard=True)
-    helpButton.add(KeyboardButton('/help'))
+    help_button = ReplyKeyboardMarkup(resize_keyboard=True)
+    help_button.add(KeyboardButton('/help'))
 
     # Envio de mensagem
     bot.reply_to(mensagem, r'Hmmm, eu não conheço esse comando\.')
     bot.send_message(mensagem.chat.id, 
                      r'Digite /help ou clique no botão abaixo para ver os comandos disponíveis\.',
-                     reply_markup=helpButton)
+                     reply_markup=help_button)
 
 
 bot.polling()
