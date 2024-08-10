@@ -4,7 +4,8 @@ import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     KeyboardButton
 from telebot.replymarkup import ReplyKeyboardMarkup
-
+from dotenv import load_dotenv
+from os import getenv
 from bus import get_day_bus_schedule, create_available_bus_list_message, \
     create_next_bus_message
 from texts import start_text, help_text, onibus_text, bandejao_text, \
@@ -13,8 +14,8 @@ from time_utils import CURRENT_WEEKDAY
 from bus_schedule import BUS_FULL_SCHEDULE_PHOTO
 
 # Fazer conexão com a API do bot do Telegram
-CHAVE_API = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
-bot = telebot.TeleBot(CHAVE_API, parse_mode='MarkdownV2')
+load_dotenv()
+bot = telebot.TeleBot(getenv('DEV_API_KEY'), parse_mode='MarkdownV2')
 
 """NOTAS:
 - O parâmetro "messagem" é um objeto mensagem enviada pelo usuário;
