@@ -1,11 +1,11 @@
-startText = f"""
+start_text = f"""
 Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
 
 Meu objetivo é fornecer informações dos ônibus da moradia e dos restaurantes da Unicamp de forma rápida e fácil\.
 
 Clique no botão abaixo ou digite /help para conhecer alguns dos comandos que você pode utilizar\.
 """
-helpText = """
+help_text = """
 Esses são os principais comandos para você usar\. Com eles, você consegue listar os comandos
 para cada área que você deseja\.
 
@@ -15,7 +15,7 @@ para cada área que você deseja\.
 
 \- /tudo: Listar todos os comandos
 """
-onibusText = """
+onibus_text = """
 \- /oProx: Ver os próximos 2 ônibus de ida e de volta
 
 \- /oTodos: Ver foto com todos os horários de ônibus
@@ -24,7 +24,7 @@ onibusText = """
 
 \- /oTodosVolta: Ver todos os horários de ônibus de VOLTA dia \(Unicamp \-\> Moradia\)
 """
-bandejaoText = """
+bandejao_text = """
 Geral
 \- /bHoras: Ver os horários dos três restaurantes
 
@@ -39,7 +39,7 @@ Restaurantes
 
 \- /ra: Ver informações do RA
 """
-cardapioText = """
+cardapio_text = """
 \- /bTradicional: Cardápio tradicional
 
 \- /bVegano: Cardápio vegano
