@@ -16,29 +16,14 @@ def next_bus_from_now() -> tuple[str, str]:
     return BUS_SCHEDULER[day_type]
 
 # Funções principais
-def createNextBusMessage() -> str:
-    # TODO
-    # Pode implementar o resto com a nova lógica :p
+def create_next_bus_message(time:str) -> str:
+    todays_schedule = next_bus_from_now()
+    next_buses = todays_schedule[time]
 
-    # String formatada
-    next2busText = f"""
-🚌 HORÁRIOS DOS PRÓXIMOS ÔNIBUS
-
-⌚ Horário atual: {dt_to_str(CURRENT_DATETIME)}
-
-➡️ IDA \(Moradia \-\> Unicamp\):
-    01\) \) \) \) \) \) \) \) \) \) \) \) \) \) \) \) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) ) ) \) {timesOutput[0]}
-    02\) {timesOutput[1]}
-
-⬅️ VOLTA \(Unicamp \-\> Moradia\):
-    01\) {timesOutput[2]}
-    02\) {timesOutput[3]}
+    next2busesText = f"""+{'-'*7}+{'-'*7}+
+|{'IDA':^7}|{'VOLTA':^7}|
++{'-'*7}+{'-'*7}+
+{next_buses}
++{'-'*7}+{'-'*7}+
 """
-    return next2busText
-
-def createAvailableBusListMessage(busSchedule:list) -> str:
-    """Cria uma string com todos os horários do dia de ônibus, riscando os horários que já passaram e destacando o próximo."""
-    # BUG
-    # Retornar toda a lista de onibus que ja foram não vale a pena
-    # É muita informação e provavelmente o usuario não quer
-    # Mas pode reeimplementar isso se quiser usando a nova lógica
+    return next2busesText
