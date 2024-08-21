@@ -11,7 +11,7 @@ def format_msg(msg: str, formatting_marker: str) -> str:
         msg = "Hello, World!"
         formatting_marker = "*"
 
-        return: "*Hello, World!" (bold format)
+        return: "*Hello, World!*" (bold format)
     """
     return formatting_marker + msg + formatting_marker
     
