@@ -6,7 +6,7 @@ import telebot  # Biblioteca pyTelegramBotAPI para acessar a API do bot do Teleg
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bus import *
-from restaurantsInfo import *
+from restaurants_info import *
 from texts import *
 from time_utils import *
 

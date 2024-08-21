@@ -1,7 +1,7 @@
 """
 Esse arquivo contém todas as funções relacionadas aos restaurantes da Unicamp.
 """
-from restaurantsInfo import *
+from restaurants_info import *
 
 
 def printLocalidades(dia_atual, h_atual, h_atual_time):
@@ -15,11 +15,11 @@ def printLocalidades(dia_atual, h_atual, h_atual_time):
     if (dia_atual in 'Segunda Terça Quarta Quinta Sexta'):
         if h_atual < 830:
             proximaRefeicao = 'o Café da Manhã'
-            localidades = cafeLocalidades
+            localidades = cafe_localidades
             left = calc_time_diff(h_atual, 730)
         elif h_atual < 1400:
             proximaRefeicao = 'o Almoço'
-            localidades = almocoLocalidades
+            localidades = almoco_localidades
         elif h_atual < 1945:
             proximaRefeicao = 'o Jantar'
             localidades = jantarLocalidades

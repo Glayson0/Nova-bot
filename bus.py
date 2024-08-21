@@ -3,7 +3,7 @@ Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
 import datetime as dt
 
-from busSchedule import *
+from bus_schedule import *
 from time_utils import *
 
 
