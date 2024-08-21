@@ -5,6 +5,16 @@ def escape_msg(output: str) -> str:
 
     return output
 
+def format_msg(msg: str, formatting_marker: str) -> str:
+    """Formats the message with the formatting marker.
+    Example:
+        msg = "Hello, World!"
+        formatting_marker = "*"
+
+        return: "*Hello, World!" (bold format)
+    """
+    return formatting_marker + msg + formatting_marker
+    
 start_text = f"""
 Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
 
