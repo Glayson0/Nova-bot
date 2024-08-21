@@ -1,3 +1,10 @@
+def escape_msg(output: str) -> str:
+    """Escape special chars:  . ! | ( ) - _ + #"""
+    for char in (".", "!", "|", "(", ")", "-", "_", "+", "#"):
+        output = output.replace(char, rf"\{char}")
+
+    return output
+
 start_text = f"""
 Eu me chamo Nova e sou um bot criado por alunos da Unicamp\!
 
