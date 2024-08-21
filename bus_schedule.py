@@ -1,5 +1,5 @@
-"""
-Esse arquivo contém os horários de funcionamento dos ônibus da Unicamp e suas rotas.
+"""Esse arquivo contém os horários de funcionamento dos ônibus da Unicamp e
+suas rotas.
 """
 import dataclasses as dc
 import datetime as dt

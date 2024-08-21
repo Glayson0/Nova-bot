@@ -1,5 +1,4 @@
-"""
-Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
+"""Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
 import datetime as dt
 
