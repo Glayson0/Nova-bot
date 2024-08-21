@@ -5,7 +5,7 @@ import dataclasses as dc
 import datetime as dt
 from collections import deque
 
-BUS_FULL__PHOTO = 'https://i.pinimg.com/originals/cf/ad/04/cfad0446abaf264bf013c3f391276aac.jpg'
+BUS_FULL_PHOTO = 'https://i.pinimg.com/originals/cf/ad/04/cfad0446abaf264bf013c3f391276aac.jpg'
 MINUTES_IN_A_DAY = 1440
 
 @dc.dataclass
