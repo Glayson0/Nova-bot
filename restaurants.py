@@ -1,76 +1,142 @@
-"""
-Esse arquivo contém todas as funções relacionadas aos restaurantes da Unicamp.
-"""
-from restaurants_info import *
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime as dt
+# from time_utils import is_business_day
+import dataclasses as dc
+
+MENU_PATH = "https://www.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
 
 
-def printLocalidades(dia_atual, h_atual, h_atual_time):
+@dc.dataclass
+class Menu:
+    food_list: list[str]
+    menu_type: str
 
-    """
-    Essa função retorna o texto da mensagem do bot com os três restaurantes, seus horários dde abertura e fechamento
-    e o tempo restante para a próxima refeição em cada um.
-    """
+    protein: str = dc.field(init=False)
+    base: str = dc.field(init=False)
+    complement: str = dc.field(init=False)
+    salad: str = dc.field(init=False)
+    dessert: str = dc.field(init=False)
+    drink: str = dc.field(init=False)
+
+    def __post_init__(self):
+        self.protein = self.food_list[0]
+        self.base = self.food_list[1]
+        self.complement = self.food_list[2]
+        self.salad = self.food_list[3]
+        self.dessert = self.food_list[4]
+        self.drink = self.food_list[5]
+
+    def __str__ (self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        menu_types = ["Almoço Tradicional", "Almoço Vegano", "Jantar Tradicional", "Jantar Vegano"]
+        message = (
+            f"🍽️  Menu: {menu_types[self.menu_type]}\n"
+            f"-----------------\n"
+            f"🍛 Proteína: {self.protein}\n"
+            f"🍚 Base: {self.base}\n"
+            f"🥗 Complemento: {self.complement}\n"
+            f"🥗 Salada: {self.salad}\n"
+            f"🍰 Sobremesa: {self.dessert}\n"
+            f"🥤 Bebida: {self.drink}\n"
+            f"-----------------"
+        )
+        return message
+
+
+@dc.dataclass
+class Restaurant:
+    name: str
+    schedule: dict[str:tuple]
+    open_at_weekend: bool
+
+
+def clean_and_split_menu(protein: str, menu_items: str) -> list[str]:
+
+    food_list = menu_items.split("\r\n")
+    food_list = food_list[1:3]
+    food_list.insert(0, protein)
+
+    for i in range(len(food_list)):
+        food_list[i] = food_list[i].strip()
         
-    ##Segunda a Sexta
-    if (dia_atual in 'Segunda Terça Quarta Quinta Sexta'):
-        if h_atual < 830:
-            proximaRefeicao = 'o Café da Manhã'
-            localidades = cafe_localidades
-            left = calc_time_diff(h_atual, 730)
-        elif h_atual < 1400:
-            proximaRefeicao = 'o Almoço'
-            localidades = almoco_localidades
-        elif h_atual < 1945:
-            proximaRefeicao = 'o Jantar'
-            localidades = jantarLocalidades
-        elif h_atual > 1945:
-            proximaRefeicao = 'o Café da Manhã'
-            localidades = cafeLocalidades
-            left = calc_time_diff(h_atual, 730)
+    aux_list = food_list[-1].split('                    ')
+    food_list.pop(-1)
+    aux_list[-1] = aux_list[-1].replace(" Observações:", "")
 
-    ##Sabado
-    elif dia_atual in 'Sábado':
-        if h_atual < 1030:
-            proximaRefeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
-        elif h_atual < 1730:
-            proximaRefeicao = 'o Jantar'
-            localidades = jantarLocalidades['RS']
-            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
-        elif h_atual > 1945:
-            proximaRefeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-            left = calc_time_diff(h_atual, 730)
+    food_list += aux_list
+
+    for i in range(len(food_list)):
+        food_list[i] = food_list[i].strip()
+
+    return [food.capitalize() for food in food_list]
+
+
+def get_menu(
+        menu_type: int,
+        date: str = dt.now().strftime("%Y-%m-%d")
+) -> Menu:
+    """
+    Get the menu for a specific date and menu type.
+
+    Args:
+        date (str): The date in "YYYY-MM-DD" format.
+        menu_type (int): The menu type: 0 = traditional lunch, 1 = traditional dinner, 2 = vegan lunch, 3 = vegan dinner.
+
+    Returns:
+        Menu: The menu for the specified date and menu type.
+    """
+    response = requests.get(MENU_PATH.format(date=date))
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find all menu items
+    proteins = soup.find_all(class_="menu-item-name")
+    menu_items = soup.find_all(class_="menu-item-description")
+
+    # All menus
+    all_menus = []
+    for i in range(len(proteins)):
+        all_menus.append(clean_and_split_menu(proteins[i].text, menu_items[i].text))
+
+    return Menu(all_menus[menu_type], menu_type)
+
+
+ru = Restaurant(
+    "RU", 
+    {"breakfast": ('07:30', '08:30'),
+    "lunch": ('10:30', '14:00'),
+    "dinner": ('17:30', '19:45')},
+    False)
+
+ra = Restaurant(
+    "RA",
+    {"breakfast": None,
+    "lunch": ('11:15','14:00'),
+    "dinner": ('17:30','19:00')
+    },
+    False)
+
+rs = Restaurant(
+    "RS",
+    {"breakfast": None,
+    "lunch": ('11:00','14:00'),
+    "dinner": ('17:30','19:00')
+    },
+    True)
+
+trad_lunch = get_menu(0)
+vegan_lunch = get_menu(1)
+trad_dinner = get_menu(2)
+vegan_dinner = get_menu(3)
+
+if __name__ == "__main__":
+    print(trad_lunch)
+    print()
+    print(trad_dinner)
+    print()
+    print(vegan_lunch)
+    print()
+    print(vegan_dinner)
     
-    ##Domingo
-    elif (dia_atual in 'Domingo'):
-        if h_atual < 1030:
-            proximaRefeicao = 'o Almoço'
-            localidades = almocoLocalidades['RS']
-            left = datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time
-        else:
-            proximaRefeicao = 'o Café da Manhã'
-            localidades = cafeLocalidades
-            left = calc_time_diff(h_atual, 730)
-        
-    ##Present Results
-    if localidades == cafeLocalidades:
-        return f"""
-\- RU ({localidades['RU'][0]} \- {localidades['RU'][1]}):
-· faltam {left} horas para {proximaRefeicao}
-          """
-    elif dia_atual in 'Sábado Domingo':
-        return f"""
-\- RS ({localidades['RS'][0]} \- {localidades['RS'][1]}):
-· faltam {datetime.strptime(localidades['RS'][0], '%H:%M') - h_atual_time} horas para {proximaRefeicao}
-          """
-    else:
-        return f"""
-\- RU ({localidades['RU'][0]} \- {localidades['RU'][1]}):
-· faltam {calc_time_diff(convertToInt(localidades['RU'][0]), h_atual)} horas para {proximaRefeicao}
-\- RA ((({localidades['RA'][0]} \- {localidades['RA'][1]}):
-· faltam {calc_time_diff(convertToInt(localidades['RA'][0]), h_atual)} horas para {proximaRefeicao}
-\- RS ((({localidades['RS'][0]} \- {localidades['RS'][1]}):
-· faltam {calc_time_diff(convertToInt(localidades['RS'][0]), h_atual)} horas para {proximaRefeicao}
-          """
