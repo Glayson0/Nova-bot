@@ -2,6 +2,7 @@
 """
 
 from re import match
+from datetime import datetime
 
 
 def is_business_day(day: int) -> bool:
@@ -29,3 +30,11 @@ def is_time_valid(time: str) -> bool:
 
 def is_weekday_valid(weekday: int) -> bool:
     return 0 <= weekday <= 9
+
+
+def is_date_valid(date: str) -> bool:
+    try:
+        datetime.strptime(date, '%m-%d')
+        return True
+    except ValueError:
+        return False

@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime as dt
-# from time_utils import is_business_day
+from modules.time_utils import is_date_valid
 import dataclasses as dc
 
 MENU_PATH = "https://www.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
@@ -31,17 +31,15 @@ class Menu:
         return self.__repr__()
 
     def __repr__(self) -> str:
-        menu_types = ["Almoço Tradicional", "Almoço Vegano", "Jantar Tradicional", "Jantar Vegano"]
+        menu_types = ["🔴 Almoço Tradicional", "🟢 Almoço Vegano", "🔴 Jantar Tradicional", "🟢 Jantar Vegano"]
         message = (
-            f"🍽️  Menu: {menu_types[self.menu_type]}\n"
-            f"-----------------\n"
-            f"🍛 Proteína: {self.protein}\n"
-            f"🍚 Base: {self.base}\n"
-            f"🥗 Complemento: {self.complement}\n"
-            f"🥗 Salada: {self.salad}\n"
-            f"🍰 Sobremesa: {self.dessert}\n"
-            f"🥤 Bebida: {self.drink}\n"
-            f"-----------------"
+            f"*{menu_types[self.menu_type]}*\n"
+            f"*Proteína:* {self.protein}\n"
+            f"*Base:* {self.base}\n"
+            f"*Complemento:* {self.complement}\n"
+            f"*Salada:* {self.salad}\n"
+            f"*Sobremesa:* {self.dessert}\n"
+            f"*Bebida:* {self.drink}\n"
         )
         return message
 
@@ -76,7 +74,7 @@ def clean_and_split_menu(protein: str, menu_items: str) -> list[str]:
 
 def get_menu(
         menu_type: int,
-        date: str = dt.now().strftime("%Y-%m-%d")
+        date: str
 ) -> Menu:
     """
     Get the menu for a specific date and menu type.
@@ -103,6 +101,16 @@ def get_menu(
     return Menu(all_menus[menu_type], menu_type)
 
 
+def is_menu_number_valid(menu_number: int):
+    return 0 <= menu_number <= 2
+
+def validate_menu_entries(date: str, menu_number: int):
+    if not is_date_valid(date):
+        return ValueError(f"{menu_number} -> It is not a valid date 'MM-DD'.")
+    if not is_menu_number_valid(menu_number):
+        return ValueError(f"{menu_number} -> It is not a valid menu number (0-2).")
+
+
 ru = Restaurant(
     "RU", 
     {"breakfast": ('07:30', '08:30'),
@@ -125,18 +133,3 @@ rs = Restaurant(
     "dinner": ('17:30','19:00')
     },
     True)
-
-trad_lunch = get_menu(0)
-vegan_lunch = get_menu(1)
-trad_dinner = get_menu(2)
-vegan_dinner = get_menu(3)
-
-if __name__ == "__main__":
-    print(trad_lunch)
-    print()
-    print(trad_dinner)
-    print()
-    print(vegan_lunch)
-    print()
-    print(vegan_dinner)
-    
