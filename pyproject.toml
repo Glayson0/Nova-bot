@@ -1,0 +1,29 @@
+[project]
+name = "nova-bot"
+requires-python = ">=3.10"
+version = "1.0.0"
+authors = [
+    { name="Glayson", email="gn.btista@gmail.com" },
+    { name="Yellowisk", email="oheitoralmeida2013@gmail.com" }
+]
+maintainers = [
+  {name = "Sergio Pires", email = "sergiodanpires@gmail.com"}
+]
+description = "Telegram bot for show busses schedulers and uni menu restaurant"
+readme = "README.md"
+keywords = ["python", "whatsapp", "telegram", "chatbot", "api", "onibus", "bandeco"]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
+]
+dependencies = [
+  "pyTelegramBotAPI>=4.22.1"
+]
+
+[tool.setuptools]
+packages = []
+
+[project.urls]
+repository = "https://github.com/Glayson0/Nova-bot"
