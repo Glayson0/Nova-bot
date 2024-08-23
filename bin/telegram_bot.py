@@ -6,8 +6,8 @@ import logging
 import telebot  # Biblioteca pyTelegramBotAPI
 from telebot.types import Message
 
-from telegram.telegram_msg import *
 from data.bus_schedule import BUS_FULL_PHOTO
+from telegram.telegram_msg import *
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -51,8 +51,10 @@ def edit_message(chat_id, message_id,  text_: str, reply_markup_=None):
 # /start
 @bot.message_handler(commands=["start"])
 def start_menu(message: Message) -> None:
-    """Essa função envia uma mensagem de boas vindas no chat, com a sugestão
-    do comando /help."""
+    """
+        Essa função envia uma mensagem de boas vindas no chat, com a sugestão
+        do comando /help.
+    """
     try:
         send_message(message, start_message.short_text.format(first_name=message.chat.first_name))
         send_message(message, start_message.text, start_message.inline_markup)
@@ -63,8 +65,10 @@ def start_menu(message: Message) -> None:
 # /home
 @bot.message_handler(commands=["home"])
 def home(message: Message) -> None:
-    """Essa função envia uma mensagem no chat com 3 comandos principais para
-    ajudar o usuário."""
+    """
+    Essa função envia uma mensagem no chat com 3 comandos principais para
+    ajudar o usuário.
+    """
     try:
         send_message(message, home_message.short_text, False)
         send_message(message, home_message.text, home_message.inline_markup)
@@ -75,7 +79,8 @@ def home(message: Message) -> None:
 # /tudo
 @bot.message_handler(commands=["tudo"])
 def todos_comandos(message: Message) -> None:
-    """Envia uma mensagem com todos os comandos disponíveis.
+    """
+        Envia uma mensagem com todos os comandos disponíveis.
     """
     try:
         send_message(message, ALL_COMMANDS_TEXT, start_message.inline_markup)
@@ -90,8 +95,10 @@ def todos_comandos(message: Message) -> None:
 # /onibus
 @bot.message_handler(commands=["onibus"])
 def onibus(message: Message) -> None:
-    """Essa função envia uma mensagem no chat listando todos os comandos
-    relacionados com os ônibus da moradia."""
+    """
+        Essa função envia uma mensagem no chat listando todos os comandos
+        relacionados com os ônibus da moradia.
+    """
     try:
         send_message(message, onibus_message.short_text)
         send_message(message, onibus_message.text, onibus_message.inline_markup)
@@ -102,8 +109,10 @@ def onibus(message: Message) -> None:
 # /oProx
 @bot.message_handler(commands=["oProx"])
 def oProx(message: Message) -> None:
-    """Envia uma tabela de IDA e VOLTA no chat com os N números de ônibus
-    fornecidos. Default: 3"""
+    """
+        Envia uma tabela de IDA e VOLTA no chat com os N números de ônibus
+        fornecidos. Default: 3
+    """
     try:
         _, num_buses = message.text.split()
         num_buses = int(num_buses)
@@ -166,7 +175,7 @@ def bandejao(message: Message) -> None:
         send_message(message, bandejao_message.text, bandejao_message.inline_markup)
     except Exception as e:
         logging.error(f"Error in bandejao command: {e}")
-    
+
 
 
 @bot.message_handler(commands=["bCardapio"])
@@ -231,7 +240,7 @@ def callback_query(call) -> None:
         elif call.data == "cb_bCardapio0":
             bot.answer_callback_query(call.id)
             bCardapio(call.message)
-        
+
         elif call.data == "cb_bCardapio1":
             bot.answer_callback_query(call.id)
             bCardapio(call.message, 1)
@@ -274,6 +283,6 @@ def handle_unknown_message(message: Message) -> None:
         send_message(message, unknown_message.text, unknown_message.inline_markup)
     except Exception as e:
         logging.error(f"Error in handle_unknown_message command: {e}")
-    
 
-bot.polling()
+if __name__ == "__main__":
+    bot.polling()
