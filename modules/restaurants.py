@@ -1,10 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime as dt
 from modules.time_utils import is_date_valid
 import dataclasses as dc
 
-MENU_PATH = "https://www.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
+MENU_PATH = "https://sistemas.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
 
 
 @dc.dataclass
