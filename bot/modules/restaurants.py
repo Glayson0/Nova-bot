@@ -1,7 +1,8 @@
+import dataclasses as dc
+
 import requests
 from bs4 import BeautifulSoup
-from modules.time_utils import is_date_valid
-import dataclasses as dc
+from bot.modules.time_utils import is_date_valid
 
 MENU_PATH = "https://sistemas.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
 

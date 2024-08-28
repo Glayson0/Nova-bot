@@ -2,20 +2,26 @@
 """
 
 import logging
+import os
+import time
 
+import dotenv
 import telebot  # Biblioteca pyTelegramBotAPI
 from telebot.types import Message
 
-from data.bus_schedule import BUS_FULL_PHOTO
-from telegram.telegram_msg import *
+from bot.data.bus_schedule import BUS_FULL_PHOTO
+from bot.telegram.telegram_msg import *
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
+dotenv.load_dotenv()
+
+# Fix timezone
+os.environ["TZ"] = "America/Sao_Paulo"
+time.tzset()
 
 # Make connection with bot's API
-API_TOKEN = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
-bot = telebot.TeleBot(API_TOKEN, parse_mode="MarkdownV2")
-
+bot = telebot.TeleBot(os.environ["API_TOKEN"], parse_mode="MarkdownV2")
 
 # --------------------- #
 #  Auxiliary functions

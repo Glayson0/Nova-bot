@@ -1,11 +1,13 @@
 import dataclasses as dc
 from datetime import datetime as dt
 
-from modules.bus import get_next_buses, get_weekdays_schedule, validate_bus_entries
-from modules.restaurants import get_menu, validate_menu_entries
 from telebot.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, ReplyKeyboardMarkup)
-from data.texts import *
+
+from bot.data.texts import *
+from bot.modules.bus import (get_next_buses, get_weekdays_schedule,
+                             validate_bus_entries)
+from bot.modules.restaurants import get_menu, validate_menu_entries
 
 
 @dc.dataclass
@@ -29,7 +31,6 @@ def create_next_buses_msg(
     time: str | None = None,
     n_buses: int = 1,
 ) -> str:
-    
     if weekday is None:
         weekday = dt.now().weekday()
         

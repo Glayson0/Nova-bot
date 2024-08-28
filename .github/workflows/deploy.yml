@@ -1,0 +1,31 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - deploy
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          # Update repository
+          cd Nova-bot
+
+          cd bot
+
+          # Update env vars
+          echo "API_TOKEN=${{ secrets.API_TOKEN }}" > .env
+
+          # Rebuild docker compose
+          docker compose down
+          docker compose build
+          docker compose up -d

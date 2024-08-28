@@ -1,8 +1,8 @@
 """Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
 """
 
-from re import match
 from datetime import datetime
+from re import match
 
 
 def is_business_day(day: int) -> bool:
