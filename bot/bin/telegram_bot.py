@@ -3,12 +3,14 @@
 
 import logging
 import os
-
 import dotenv
+
 import telebot  # Biblioteca pyTelegramBotAPI
-from bus_schedule import BUS_FULL_PHOTO
 from telebot.types import Message
-from telegram_msg import *
+
+from bot.telegram.telegram_msg import *
+from bot.data.bus_schedule import BUS_FULL_PHOTO
+
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
