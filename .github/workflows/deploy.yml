@@ -24,7 +24,7 @@ jobs:
           cd bot
 
           # Update env vars
-          echo "API_TOKEN=${{ secrets.API_TOKEN }}" > bot/.env
+          echo "API_TOKEN=${{ secrets.API_TOKEN }}" > .env
 
           # Rebuild docker compose
           docker compose down
