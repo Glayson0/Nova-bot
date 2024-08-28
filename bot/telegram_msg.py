@@ -1,15 +1,11 @@
 import dataclasses as dc
 from datetime import datetime as dt
-from modules.bus import validate_bus_entries, get_weekdays_schedule, get_next_buses
-from modules.restaurants import get_menu, validate_menu_entries
-from data.texts import *
 
-from telebot.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-)
+from bus import get_next_buses, get_weekdays_schedule, validate_bus_entries
+from restaurants import get_menu, validate_menu_entries
+from telebot.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, ReplyKeyboardMarkup)
+from texts import *
 
 
 @dc.dataclass

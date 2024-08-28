@@ -7,7 +7,7 @@ authors = [
     { name="Yellowisk", email="oheitoralmeida2013@gmail.com" }
 ]
 maintainers = [
-  {name = "Sergio Pires", email = "sergiodanpires@gmail.com"}
+  { name = "Sergio Pires", email = "sergiodanpires@gmail.com" }
 ]
 description = "Telegram bot for show busses schedulers and uni menu restaurant"
 readme = "README.md"
@@ -19,11 +19,13 @@ classifiers = [
   "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
-  "pyTelegramBotAPI>=4.22.1"
+  "pyTelegramBotAPI>=4.22.1",
+  "beautifulsoup4>=4.12.3",
+  "python-dotenv==1.0.0"
 ]
 
 [tool.setuptools]
-packages = []
+packages = ["bot"]
 
 [project.urls]
 repository = "https://github.com/Glayson0/Nova-bot"

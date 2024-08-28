@@ -2,19 +2,20 @@
 """
 
 import logging
+import os
 
+import dotenv
 import telebot  # Biblioteca pyTelegramBotAPI
+from bus_schedule import BUS_FULL_PHOTO
 from telebot.types import Message
-
-from data.bus_schedule import BUS_FULL_PHOTO
-from telegram.telegram_msg import *
+from telegram_msg import *
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
+dotenv.load_dotenv()
 
 # Make connection with bot's API
-API_TOKEN = "7141300367:AAHBHEelfnAig53EVxqq0oabZrRz15CjIJ8"
-bot = telebot.TeleBot(API_TOKEN, parse_mode="MarkdownV2")
+bot = telebot.TeleBot(os.environ["API_TOKEN"], parse_mode="MarkdownV2")
 
 
 # --------------------- #
@@ -285,4 +286,5 @@ def handle_unknown_message(message: Message) -> None:
         logging.error(f"Error in handle_unknown_message command: {e}")
 
 if __name__ == "__main__":
+    print("3")
     bot.polling()

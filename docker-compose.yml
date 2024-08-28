@@ -1,0 +1,11 @@
+services:
+  nova-bot:
+    container_name: nova-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/Nova-bot
+
+    restart: always
+    command: ["python3", "bot/telegram_bot.py"]

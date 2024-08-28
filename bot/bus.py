@@ -1,9 +1,8 @@
 """Esse arquivo contém todas as funções relacionadas aos ônibus da Unicamp.
 """
 
-from data.bus_schedule import BUS_SCHEDULER
-from modules.time_utils import is_business_day, is_time_valid, is_weekday_valid
-
+from bus_schedule import BUS_SCHEDULER
+from time_utils import is_business_day, is_time_valid, is_weekday_valid
 
 MAX_BUSINESSDAY_BUSES = 72
 MAX_WEEKEND_BUSES = 35
