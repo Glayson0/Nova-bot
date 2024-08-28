@@ -8,4 +8,4 @@ services:
       - .:/Nova-bot
 
     restart: always
-    command: ["python3", "bot/bin/telegram_bot.py"]
+    command: ["python3", "telegram_bot.py"]

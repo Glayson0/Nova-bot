@@ -19,7 +19,6 @@ jobs:
         script: |
           # Update repository
           cd Nova-bot
-          git pull
 
           cd bot
 

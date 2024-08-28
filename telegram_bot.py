@@ -3,22 +3,25 @@
 
 import logging
 import os
-import dotenv
+import time
 
+import dotenv
 import telebot  # Biblioteca pyTelegramBotAPI
 from telebot.types import Message
 
-from bot.telegram.telegram_msg import *
 from bot.data.bus_schedule import BUS_FULL_PHOTO
-
+from bot.telegram.telegram_msg import *
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
 dotenv.load_dotenv()
 
+# Fix timezone
+os.environ["TZ"] = "America/Sao_Paulo"
+time.tzset()
+
 # Make connection with bot's API
 bot = telebot.TeleBot(os.environ["API_TOKEN"], parse_mode="MarkdownV2")
-
 
 # --------------------- #
 #  Auxiliary functions
@@ -288,5 +291,4 @@ def handle_unknown_message(message: Message) -> None:
         logging.error(f"Error in handle_unknown_message command: {e}")
 
 if __name__ == "__main__":
-    print("3")
     bot.polling()
