@@ -1,15 +1,11 @@
 import dataclasses as dc
 from datetime import datetime as dt
-from modules.bus import validate_bus_entries, get_weekdays_schedule, get_next_buses
-from modules.restaurants import get_menu, validate_menu_entries
-from data.texts import *
 
-from telebot.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-)
+from modules.bus import get_next_buses, get_weekdays_schedule, validate_bus_entries
+from modules.restaurants import get_menu, validate_menu_entries
+from telebot.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, ReplyKeyboardMarkup)
+from data.texts import *
 
 
 @dc.dataclass
@@ -29,10 +25,16 @@ class Message_Layout:
 
 
 def create_next_buses_msg(
-    weekday: int = dt.now().weekday(),
-    time: str = dt.now().strftime("%H:%M"),
+    weekday: int | None = None,
+    time: str | None = None,
     n_buses: int = 1,
 ) -> str:
+    
+    if weekday is None:
+        weekday = dt.now().weekday()
+        
+    if time is None:
+        time = dt.now().strftime("%H:%M")
 
     validate_bus_entries(weekday, time, n_buses)
 
@@ -55,8 +57,12 @@ def create_next_buses_msg(
 
 
 def create_menu_msg(
-    date: str = dt.now().strftime("%Y-%m-%d"), menu_number: int = 0
+    date: str | None = None,
+    menu_number: int = 0
 ) -> str:
+    
+    if date is None:
+        date = dt.now().strftime("%Y-%m-%d")
 
     validate_menu_entries(date, menu_number)
 
