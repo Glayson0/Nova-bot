@@ -27,8 +27,16 @@ class Message_Layout:
 def create_next_buses_msg(
     weekday: int | None = None,
     time: str | None = None,
+    weekday: int | None = None,
+    time: str | None = None,
     n_buses: int = 1,
 ) -> str:
+    
+    if weekday is None:
+        weekday = dt.now().weekday()
+        
+    if time is None:
+        time = dt.now().strftime("%H:%M")
     
     if weekday is None:
         weekday = dt.now().weekday()
@@ -59,7 +67,12 @@ def create_next_buses_msg(
 def create_menu_msg(
     date: str | None = None,
     menu_number: int = 0
+    date: str | None = None,
+    menu_number: int = 0
 ) -> str:
+    
+    if date is None:
+        date = dt.now().strftime("%Y-%m-%d")
     
     if date is None:
         date = dt.now().strftime("%Y-%m-%d")
