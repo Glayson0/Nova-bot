@@ -266,6 +266,10 @@ def callback_query(call) -> None:
         elif call.data == "cb_bCardapio2":
             bot.answer_callback_query(call.id)
             bCardapio(call.message, 2)
+            
+        elif call.data == "cb_bJaPode":
+            bot.answer_callback_query(call.id)
+            bJaPode(call.message)
 
         # Outros
 
