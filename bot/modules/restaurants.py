@@ -2,7 +2,10 @@ import dataclasses as dc
 
 import requests
 from bs4 import BeautifulSoup
-from bot.modules.time_utils import is_date_valid
+from bot.modules.time_utils import (is_date_valid, is_business_day,
+                                    get_time_remaining)
+
+from datetime import datetime as dt
 
 MENU_PATH = "https://sistemas.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
 
@@ -133,3 +136,64 @@ rs = Restaurant(
     "dinner": ('17:30','19:00')
     },
     True)
+
+def get_restaurants_from_the_day(weekday: int) -> list[Restaurant]:
+    """
+    Get the restaurants available on the given day.
+
+    Args:
+        weekday (int): The weekday, where Monday = 0, Tuesday = 1, ..., Sunday = 6.
+
+    Returns:
+        list[Restaurant]: The restaurants available on the given day.
+    """
+    if is_business_day(weekday):
+        return [ru, ra, rs]
+    else:
+        return [rs]
+
+def get_available_restaurants(date: str, weekday: int) -> list[Restaurant]:
+    """
+    Check if there are any restaurants available for the given date.
+
+    Args:
+        date (str): The date in "HH:MM" format.
+        weekday (int): The weekday, where Monday = 0, Tuesday = 1, ..., Sunday = 6.
+
+    Returns:
+        list[str]: A list of the available restaurants.
+    """
+    
+    available_restaurants = get_restaurants_from_the_day(weekday)
+        
+    date = dt.strptime(date, "%H:%M")
+    
+    for restaurant in available_restaurants:
+        for schedule in restaurant.schedule.values():
+            if schedule and dt.strptime(schedule[0], "%H:%M") <= date <= dt.strptime(schedule[1], "%H:%M"):
+                pass
+            else:
+                available_restaurants.remove(restaurant)
+
+    return available_restaurants
+    
+def get_next_restaurant_opening_time(hour: str, restaurant: Restaurant) -> str:
+    """
+    Get the time remaining until the restaurant opens.
+    
+    Args:
+        hour (str): The hour in "HH:MM" format.
+        restaurant (Restaurant): The restaurant to check the opening time.
+        
+    Returns:
+        str: The time remaining until the restaurant opens.
+    """
+    
+    hour = dt.strptime(hour, "%H:%M")
+    
+    for schedule in restaurant.schedule.values():
+        if schedule and dt.strptime(schedule[0], "%H:%M") > hour:
+            return get_time_remaining(schedule[0])
+        else:
+            None
+    

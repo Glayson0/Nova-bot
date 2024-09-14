@@ -7,8 +7,13 @@ from telebot.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 from bot.data.texts import *
 from bot.modules.bus import (get_next_buses, get_weekdays_schedule,
                              validate_bus_entries)
-from bot.modules.restaurants import get_menu, validate_menu_entries
+from bot.modules.restaurants import (get_menu, validate_menu_entries,
+                                     get_available_restaurants,
+                                     get_restaurants_from_the_day,
+                                     get_next_restaurant_opening_time)
 
+from bot.modules.time_utils import (get_time_remaining,
+                                    write_time_in_portuguese)
 
 @dc.dataclass
 class Message_Layout:
@@ -87,6 +92,29 @@ def create_menu_msg(
 
     return menu_message
 
+def create_get_restaurants_available_msg():
+    date = dt.now().strftime("%Y-%m-%d")
+    weekday = dt.now().weekday()
+    restaurants = get_available_restaurants(date, weekday)
+    
+    if restaurants and len(restaurants) > 1:
+        return f"{'\n'.join(f'O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {write_time_in_portuguese(get_time_remaining(r.schedule[1]))}' for r in restaurants)}\n"
+    elif restaurants:
+        return f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em {write_time_in_portuguese(get_time_remaining(restaurants[0].schedule[1]))}"
+    else:
+        restaurants = get_restaurants_from_the_day(weekday)
+        restaurants_info = []
+        
+        for r in restaurants:
+            next_opening_time = get_next_restaurant_opening_time(date, r)
+            restaurants_info.append((next_opening_time, r.name)) if next_opening_time else None
+                
+        if restaurants_info:
+            return f"Não há restaurantes disponíveis no momento.
+                {'\n'.join(f'{r_i[0]} abre em {write_time_in_portuguese(r_i[1])}' for r_i in restaurants_info)}"
+        else:
+            return f"Não há restaurantes disponíveis no momento."
+        
 
 # --------------------- #
 #    Message objects

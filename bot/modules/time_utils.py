@@ -38,3 +38,27 @@ def is_date_valid(date: str) -> bool:
         return True
     except ValueError:
         return False
+    
+def get_time_remaining(date: str) -> str:
+    """Receives a date in "HH-MM" format and returns the time remaining until that date.
+    """
+    date = datetime.strptime(date, '%H:%M')
+    now = datetime.now()
+    
+    time_remaining = date - now
+    
+    return str(time_remaining)
+
+def write_time_in_portuguese(time: str) -> str:
+    """Receives a time in "HH:MM" format and returns it in portuguese.
+    """
+    hours, minutes = map(int, time.split(':'))
+    
+    if hours == 0:
+        return f"{minutes} minutos"
+    elif hours == 1:
+        return f"1 hora e {minutes} minutos"
+    elif minutes == 0:
+        return f"{hours} horas"
+    else:
+        return f"{hours} horas e {minutes} minutos"
