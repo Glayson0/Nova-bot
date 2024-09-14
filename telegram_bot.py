@@ -205,6 +205,18 @@ def bCardapio(message: Message, menu_number_: int = None) -> None:
     except Exception as e:
         logging.error(f"Error in bCardapio command: {e}")
 
+# /bJaPode
+@bot.message_handler(commands=["bJaPode"])
+def bJaPode(message: Message) -> None:
+    """Envia uma mensagem no chat informando se as refeições já estão sendo
+    servidas.
+    """
+    try:
+        restaurants_available_txt = escape_msg(create_get_restaurants_available_msg())
+        send_message(message, escape_msg("Okay! Aqui está a informação solicitada:"))
+        send_message(message, restaurants_available_txt, start_message.reply_markup)
+    except Exception as e:
+        logging.error(f"Error in bJaPode command: {e}")
 
 # --------------------- #
 #        Callback

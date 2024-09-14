@@ -110,8 +110,9 @@ def create_get_restaurants_available_msg():
             restaurants_info.append((next_opening_time, r.name)) if next_opening_time else None
                 
         if restaurants_info:
-            return f"Não há restaurantes disponíveis no momento.
-                {'\n'.join(f'{r_i[0]} abre em {write_time_in_portuguese(r_i[1])}' for r_i in restaurants_info)}"
+            return f"""Não há restaurantes disponíveis no momento.
+                {'\n'.join(f'{r_i[0]} abre em {write_time_in_portuguese(r_i[1])}' for r_i in restaurants_info)}
+                """
         else:
             return f"Não há restaurantes disponíveis no momento."
         
