@@ -217,7 +217,35 @@ def bJaPode(message: Message) -> None:
         send_message(message, restaurants_available_txt, start_message.reply_markup)
     except Exception as e:
         logging.error(f"Error in bJaPode command: {e}")
-
+        
+        
+@bot.message_handler(commands=["ru"])
+def ru(message: Message) -> None:
+    ru_msg, ru_image_path = create_ru_msg()
+    try:
+        with open(ru_image_path, 'rb') as photo:
+            bot.send_photo(message.chat.id, photo, caption=escape_msg(ru_msg))
+    except Exception as e:
+        logging.error(f"Error in ru command: {e}")
+        
+@bot.message_handler(commands=["ra"])
+def ra(message: Message) -> None:
+    ra_msg, ra_image_path = create_ra_msg()
+    try:
+        with open(ra_image_path, 'rb') as photo:
+            bot.send_photo(message.chat.id, photo, caption=escape_msg(ra_msg))
+    except Exception as e:
+        logging.error(f"Error in ra command: {e}")
+        
+@bot.message_handler(commands=["rs"])
+def rs(message: Message) -> None:
+    rs_msg, rs_image_path = create_rs_msg()
+    try:
+        with open(rs_image_path, 'rb') as photo:
+            bot.send_photo(message.chat.id, photo, caption=escape_msg(rs_msg))
+    except Exception as e:
+        logging.error(f"Error in rs command: {e}")
+    
 # --------------------- #
 #        Callback
 # --------------------- #
@@ -270,6 +298,18 @@ def callback_query(call) -> None:
         elif call.data == "cb_bJaPode":
             bot.answer_callback_query(call.id)
             bJaPode(call.message)
+            
+        elif call.data == "cb_ru":
+            bot.answer_callback_query(call.id)
+            ru(call.message)
+        
+        elif call.data == "cb_ra":
+            bot.answer_callback_query(call.id)
+            ra(call.message)
+            
+        elif call.data == "cb_rs":
+            bot.answer_callback_query(call.id)
+            rs(call.message)
 
         # Outros
 
