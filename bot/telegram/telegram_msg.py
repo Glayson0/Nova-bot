@@ -93,12 +93,16 @@ def create_menu_msg(
     return menu_message
 
 def create_get_restaurants_available_msg():
-    date = dt.now().strftime("%Y-%m-%d")
+    date = dt.now().strftime("%H:%M")
     weekday = dt.now().weekday()
     restaurants = get_available_restaurants(date, weekday)
     
     if restaurants and len(restaurants) > 1:
-        return f"{'\n'.join(f'O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {write_time_in_portuguese(get_time_remaining(r.schedule[1]))}' for r in restaurants)}\n"
+        restaurant_msgs = [
+            f"O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {write_time_in_portuguese(get_time_remaining(r.schedule[1]))}"
+            for r in restaurants
+        ]
+        return "\n".join(restaurant_msgs) + "\n"
     elif restaurants:
         return f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em {write_time_in_portuguese(get_time_remaining(restaurants[0].schedule[1]))}"
     else:
@@ -107,25 +111,28 @@ def create_get_restaurants_available_msg():
         
         for r in restaurants:
             next_opening_time = get_next_restaurant_opening_time(date, r)
-            restaurants_info.append((next_opening_time, r.name)) if next_opening_time else None
+            if next_opening_time:
+                restaurants_info.append((next_opening_time, r.name))
                 
         if restaurants_info:
-            return f"""Não há restaurantes disponíveis no momento.
-                {'\n'.join(f'{r_i[0]} abre em {write_time_in_portuguese(r_i[1])}' for r_i in restaurants_info)}
-                """
+            restaurant_info_msgs = [
+                f"{r_i[1]} abre em {write_time_in_portuguese(r_i[0])}"
+                for r_i in restaurants_info
+            ]
+            return f"Não há restaurantes disponíveis no momento.\n" + "\n".join(restaurant_info_msgs)
         else:
-            return f"Não há restaurantes disponíveis no momento."
+            return "Não há restaurantes disponíveis no momento."
         
         
 def create_ru_msg() -> tuple[str, str]:
-    breakfast = f"{ru.schedule["breakfast"][0]} às {ru.schedule["breakfast"][1]}"
-    lunch = f"{ru.schedule["lunch"][0]} às {ru.schedule["lunch"][1]}"
-    dinner = f"{ru.schedule["dinner"][0]} às {ru.schedule["dinner"][1]}"
+    breakfast = f"{ru.schedule['breakfast'][0]} às {ru.schedule['breakfast'][1]}"
+    lunch = f"{ru.schedule['lunch'][0]} às {ru.schedule['lunch'][1]}"
+    dinner = f"{ru.schedule['dinner'][0]} às {ru.schedule['dinner'][1]}"
     
-    msg = f"""{ru.name}
+    msg = f"""*{ru.name}*
 {ru.address}
 
-- Horários (dia útil)
+*Horários* (dia útil)
 Café da manhã: {breakfast}
 Almoço: {lunch}
 Jantar: {dinner}
@@ -134,13 +141,13 @@ Jantar: {dinner}
     
     
 def create_ra_msg() -> tuple[str, str]:
-    lunch = f"{ra.schedule["lunch"][0]} às {ra.schedule["lunch"][1]}"
-    dinner = f"{ra.schedule["dinner"][0]} às {ra.schedule["dinner"][1]}"
+    lunch = f"{ra.schedule['lunch'][0]} às {ra.schedule['lunch'][1]}"
+    dinner = f"{ra.schedule['dinner'][0]} às {ra.schedule['dinner'][1]}"
     
-    msg = f"""{ra.name}
+    msg = f"""*{ra.name}*
 {ra.address}
 
-Horários (dia útil)
+*Horários* (dia útil)
 Café da manhã: Não há
 Almoço: {lunch}
 Jantar: {dinner}
@@ -150,15 +157,15 @@ Jantar: {dinner}
 
 
 def create_rs_msg() -> tuple[str, str]:
-    breakfast = f"{rs.schedule["breakfast"][0]} às {rs.schedule["breakfast"][1]}"
-    lunch = f"{rs.schedule["lunch"][0]} às {rs.schedule["lunch"][1]}"
-    dinner = f"{rs.schedule["dinner"][0]} às {rs.schedule["dinner"][1]}"
+    breakfast = f"{ru.schedule['breakfast'][0]} às {ru.schedule['breakfast'][1]}"
+    lunch = f"{rs.schedule['lunch'][0]} às {rs.schedule['lunch'][1]}"
+    dinner = f"{rs.schedule['dinner'][0]} às {rs.schedule['dinner'][1]}"
     
-    msg = f"""{rs.name}
+    msg = f"""*{rs.name}*
 {rs.address}
 
-- Horários (exceto domingos)
-Café da manhã (somente dias não-úteis): {breakfast}
+*Horários* (exceto domingos)
+Café da manhã (dias não-úteis): {breakfast}
 Almoço: {lunch}
 Jantar: {dinner}
 """
