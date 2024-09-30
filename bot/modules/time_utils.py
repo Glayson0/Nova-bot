@@ -1,7 +1,7 @@
 """Esse arquivo contém todas as funções relacionadas à manipulação de tempo.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from re import match
 
 
@@ -38,16 +38,6 @@ def is_date_valid(date: str) -> bool:
         return True
     except ValueError:
         return False
-    
-def get_time_remaining(date: str) -> str:
-    """Receives a date in "HH-MM" format and returns the time remaining until that date.
-    """
-    date = datetime.strptime(date, '%H:%M')
-    now = datetime.now()
-    
-    time_remaining = date - now
-    
-    return str(time_remaining)
 
 def write_time_in_portuguese(time: str) -> str:
     """Receives a time in "HH:MM" format and returns it in portuguese.
@@ -62,3 +52,24 @@ def write_time_in_portuguese(time: str) -> str:
         return f"{hours} horas"
     else:
         return f"{hours} horas e {minutes} minutos"
+
+def get_time_remaining(now: datetime, date: str) -> str:
+    """Receives a time in "HH:MM" format and returns the time remaining until that time today or tomorrow if already passed.
+    """
+    
+    target_time = datetime.strptime(date, '%H:%M')
+    
+    # Set the target time to today, since strptime doesn't specify the year, month and day
+    target_time = target_time.replace(year=now.year, month=now.month, day=now.day)
+
+    if now > target_time:
+        target_time += timedelta(days=1)
+    
+    time_remaining = target_time - now
+    
+    remaining_minutes = int(time_remaining.total_seconds() // 60)
+
+    hours = remaining_minutes // 60
+    minutes = remaining_minutes % 60
+    
+    return write_time_in_portuguese(f"{hours}:{minutes}")
