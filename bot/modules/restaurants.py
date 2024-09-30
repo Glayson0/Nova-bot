@@ -127,7 +127,7 @@ ru = Restaurant(
     },
     False,
     "Av. Érico Veríssimo, 50 - Cidade Universitária, Campinas - SP, 13083-851",
-    "bot\data\RestauranteUniversitario.png"
+    r"bot\data\RestauranteUniversitario.png"
 )
 
 ra = Restaurant(
@@ -138,7 +138,7 @@ ra = Restaurant(
         "dinner": ("17:30", "19:00")},
     False,
     "R. Bernardo Sayão, 198 - Cidade Universitária, Campinas - SP, 13083-590",
-    "bot\data\RestauranteAdmnistrativo.png"
+    r"bot\data\RestauranteAdmnistrativo.png"
 )
 
 rs = Restaurant(
@@ -149,7 +149,7 @@ rs = Restaurant(
         "dinner": ("17:30", "19:00")},
     True,
     "R. Saturnino de Brito - Cidade Universitária, Campinas - SP, 13083-889",
-    "bot\data\RestauranteSaturnino.png"   
+    r"bot\data\RestauranteSaturnino.png"   
 )
 
 
@@ -181,18 +181,14 @@ def get_available_restaurants(date: str, weekday: int) -> list[Restaurant]:
         list[str]: A list of the available restaurants.
     """
 
-    available_restaurants = get_restaurants_from_the_day(weekday)
-
     date = dt.strptime(date, "%H:%M")
 
-    for restaurant in available_restaurants:
-        for schedule in restaurant.schedule.values():
-            if schedule and dt.strptime(schedule[0], "%H:%M") <= date <= dt.strptime(
-                schedule[1], "%H:%M"
-            ):
-                pass
-            else:
-                available_restaurants.remove(restaurant)
+    available_restaurants = [
+        restaurant
+        for restaurant in get_restaurants_from_the_day(weekday)
+        for schedule in restaurant.schedule.values()
+        if schedule and dt.strptime(schedule[0], "%H:%M") <= date <= dt.strptime(schedule[1], "%H:%M")
+    ]
 
     return available_restaurants
 
@@ -213,6 +209,6 @@ def get_next_restaurant_opening_time(hour: str, restaurant: Restaurant) -> str:
 
     for schedule in restaurant.schedule.values():
         if schedule and dt.strptime(schedule[0], "%H:%M") > hour:
-            return get_time_remaining(schedule[0])
+            return get_time_remaining(hour, schedule[0])
         else:
             None
