@@ -10,7 +10,7 @@ from bot.modules.bus import (get_next_buses, get_weekdays_schedule,
 from bot.modules.restaurants import (get_menu, validate_menu_entries,
                                      get_available_restaurants,
                                      get_restaurants_from_the_day,
-                                     get_next_restaurant_opening_time)
+                                     get_next_restaurant_opening_time, ru, ra, rs)
 
 from bot.modules.time_utils import (get_time_remaining,
                                     write_time_in_portuguese)
@@ -116,6 +116,54 @@ def create_get_restaurants_available_msg():
         else:
             return f"Não há restaurantes disponíveis no momento."
         
+        
+def create_ru_msg() -> tuple[str, str]:
+    breakfast = f"{ru.schedule["breakfast"][0]} às {ru.schedule["breakfast"][1]}"
+    lunch = f"{ru.schedule["lunch"][0]} às {ru.schedule["lunch"][1]}"
+    dinner = f"{ru.schedule["dinner"][0]} às {ru.schedule["dinner"][1]}"
+    
+    msg = f"""{ru.name}
+{ru.address}
+
+- Horários (dia útil)
+Café da manhã: {breakfast}
+Almoço: {lunch}
+Jantar: {dinner}
+"""
+    return msg, ru.image_path
+    
+    
+def create_ra_msg() -> tuple[str, str]:
+    lunch = f"{ra.schedule["lunch"][0]} às {ra.schedule["lunch"][1]}"
+    dinner = f"{ra.schedule["dinner"][0]} às {ra.schedule["dinner"][1]}"
+    
+    msg = f"""{ra.name}
+{ra.address}
+
+Horários (dia útil)
+Café da manhã: Não há
+Almoço: {lunch}
+Jantar: {dinner}
+"""
+
+    return msg, ra.image_path
+
+
+def create_rs_msg() -> tuple[str, str]:
+    breakfast = f"{rs.schedule["breakfast"][0]} às {rs.schedule["breakfast"][1]}"
+    lunch = f"{rs.schedule["lunch"][0]} às {rs.schedule["lunch"][1]}"
+    dinner = f"{rs.schedule["dinner"][0]} às {rs.schedule["dinner"][1]}"
+    
+    msg = f"""{rs.name}
+{rs.address}
+
+- Horários (exceto domingos)
+Café da manhã (somente dias não-úteis): {breakfast}
+Almoço: {lunch}
+Jantar: {dinner}
+"""
+    return msg, rs.image_path
+
 
 # --------------------- #
 #    Message objects
