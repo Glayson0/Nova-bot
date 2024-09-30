@@ -127,7 +127,7 @@ ru = Restaurant(
     },
     False,
     "Av. Érico Veríssimo, 50 - Cidade Universitária, Campinas - SP, 13083-851",
-    "bot/data/RestauranteUniversiario.png"
+    "bot\data\RestauranteUniversitario.png"
 )
 
 ra = Restaurant(
@@ -138,7 +138,7 @@ ra = Restaurant(
         "dinner": ("17:30", "19:00")},
     False,
     "R. Bernardo Sayão, 198 - Cidade Universitária, Campinas - SP, 13083-590",
-    "bot/data/RestauranteAdministrativo.png"
+    "bot\data\RestauranteAdmnistrativo.png"
 )
 
 rs = Restaurant(
@@ -149,7 +149,7 @@ rs = Restaurant(
         "dinner": ("17:30", "19:00")},
     True,
     "R. Saturnino de Brito - Cidade Universitária, Campinas - SP, 13083-889",
-    "bot/data/RestauranteSaturnino.png"   
+    "bot\data\RestauranteSaturnino.png"   
 )
 
 
