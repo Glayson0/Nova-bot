@@ -47,17 +47,17 @@ def create_next_buses_msg(
     schedule = get_weekdays_schedule(weekday)
     next_buses = get_next_buses(time, schedule, n_buses)
 
-    header = f"""+{'-'*7}+{'-'*7}+
-|{'IDA':^7}|{'VOLTA':^7}|
-+{'-'*7}+{'-'*7}+"""
+    header = f"""+{'-'*13}+{'-'*13}+
+|{'IDA':^13}|{'VOLTA':^13}|
++{'-'*13}+{'-'*13}+"""
 
     body = ""
     for pair in next_buses:
         dep_bus = pair[0] if pair[0] is not None else "-"
         ret_bus = pair[1] if pair[1] is not None else "-"
-        body += f"\n|{dep_bus:^7}|{ret_bus:^7}|"
+        body += f"\n|{dep_bus:^13}|{ret_bus:^13}|"
 
-    footer = f"""\n+{'-'*7}+{'-'*7}+"""
+    footer = f"""\n+{'-'*13}+{'-'*13}+"""
 
     return header + body + footer
 
