@@ -217,8 +217,8 @@ def bJaPode(message: Message) -> None:
         send_message(message, restaurants_available_txt, start_message.reply_markup)
     except Exception as e:
         logging.error(f"Error in bJaPode command: {e}")
-        
-        
+
+
 @bot.message_handler(commands=["ru"])
 def ru(message: Message) -> None:
     ru_msg, ru_image_path = create_ru_msg()

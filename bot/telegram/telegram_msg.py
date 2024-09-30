@@ -92,19 +92,19 @@ def create_menu_msg(
 
     return menu_message
 
-def create_get_restaurants_available_msg():
+def create_get_restaurants_available_msg() -> str:
     date = dt.now().strftime("%H:%M")
     weekday = dt.now().weekday()
     restaurants = get_available_restaurants(date, weekday)
     
     if restaurants and len(restaurants) > 1:
         restaurant_msgs = [
-            f"O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {write_time_in_portuguese(get_time_remaining(r.schedule[1]))}"
+            f"O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {get_time_remaining(dt.strptime(date, "%H:%M"), r.schedule[1])}"
             for r in restaurants
         ]
         return "\n".join(restaurant_msgs) + "\n"
     elif restaurants:
-        return f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em {write_time_in_portuguese(get_time_remaining(restaurants[0].schedule[1]))}"
+        return f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em {get_time_remaining(dt.strptime(date, "%H:%M"), restaurants[0].schedule[1])}"
     else:
         restaurants = get_restaurants_from_the_day(weekday)
         restaurants_info = []
@@ -116,7 +116,7 @@ def create_get_restaurants_available_msg():
                 
         if restaurants_info:
             restaurant_info_msgs = [
-                f"{r_i[1]} abre em {write_time_in_portuguese(r_i[0])}"
+                f"{r_i[1]} abre em {r_i[0]}"
                 for r_i in restaurants_info
             ]
             return f"Não há restaurantes disponíveis no momento.\n" + "\n".join(restaurant_info_msgs)
