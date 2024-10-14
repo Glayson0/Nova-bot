@@ -7,13 +7,12 @@ from telebot.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 from bot.data.texts import *
 from bot.modules.bus import (get_next_buses, get_weekdays_schedule,
                              validate_bus_entries)
-from bot.modules.restaurants import (get_menu, validate_menu_entries,
-                                     get_available_restaurants,
-                                     get_restaurants_from_the_day,
-                                     get_next_restaurant_opening_time, ru, ra, rs)
+from bot.modules.restaurants import (get_available_restaurants, get_menu,
+                                     get_next_restaurant_opening_time,
+                                     get_restaurants_from_the_day, ra, rs, ru,
+                                     validate_menu_entries)
+from bot.modules.time_utils import get_time_remaining
 
-from bot.modules.time_utils import (get_time_remaining,
-                                    write_time_in_portuguese)
 
 @dc.dataclass
 class Message_Layout:
@@ -32,13 +31,11 @@ class Message_Layout:
 
 
 def create_next_buses_msg(
-    weekday: int | None = None,
-    time: str | None = None,
-    n_buses: int = 1,
+    weekday: int | None = None, time: str | None = None, n_buses: int = 1,
 ) -> str:
     if weekday is None:
         weekday = dt.now().weekday()
-        
+
     if time is None:
         time = dt.now().strftime("%H:%M")
 
@@ -47,9 +44,7 @@ def create_next_buses_msg(
     schedule = get_weekdays_schedule(weekday)
     next_buses = get_next_buses(time, schedule, n_buses)
 
-    header = f"""+{'-'*13}+{'-'*13}+
-|{'IDA':^13}|{'VOLTA':^13}|
-+{'-'*13}+{'-'*13}+"""
+    header = f"+{'-'*13}+{'-'*13}+|{'IDA':^13}|{'VOLTA':^13}|+{'-'*13}+{'-'*13}+"
 
     body = ""
     for pair in next_buses:
@@ -57,7 +52,7 @@ def create_next_buses_msg(
         ret_bus = pair[1] if pair[1] is not None else "-"
         body += f"\n|{dep_bus:^13}|{ret_bus:^13}|"
 
-    footer = f"""\n+{'-'*13}+{'-'*13}+"""
+    footer = f"\n+{'-'*13}+{'-'*13}+"
 
     return header + body + footer
 
@@ -66,13 +61,14 @@ def create_menu_msg(
     date: str | None = None,
     menu_number: int = 0
 ) -> str:
-    
+
     if date is None:
         date = dt.now().strftime("%Y-%m-%d")
 
     validate_menu_entries(date, menu_number)
 
     menu_keywords = ["tudo", "tradicional", "vegano"]
+    # BUG: Porque nas duas primeiras linhas tem mais de um get_menu e na outra não?
     MENU_CREATOR = {
         "tradicional": (get_menu(0, date), get_menu(2, date)),
         "vegano": (get_menu(1, date), get_menu(3, date)),
@@ -87,6 +83,7 @@ def create_menu_msg(
     menus = MENU_CREATOR[menu_keywords[menu_number]]
 
     menu_message = ""
+
     for menu in menus:
         menu_message += f"{str(menu)}\n\n"
 
@@ -96,81 +93,63 @@ def create_get_restaurants_available_msg() -> str:
     date = dt.now().strftime("%H:%M")
     weekday = dt.now().weekday()
     restaurants = get_available_restaurants(date, weekday)
-    
+
     if restaurants and len(restaurants) > 1:
         restaurant_msgs = [
-            f"O {r.name} está aberto! Ele fecha às {r.schedule[1]} em {get_time_remaining(dt.strptime(date, "%H:%M"), r.schedule[1])}"
+            (
+                f"O {r.name} está aberto! Ele fecha às {r.schedule[1]} em " +
+                get_time_remaining(dt.strptime(date, "%H:%M"), r.schedule[1])
+            )
             for r in restaurants
         ]
+
         return "\n".join(restaurant_msgs) + "\n"
+
     elif restaurants:
-        return f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em {get_time_remaining(dt.strptime(date, "%H:%M"), restaurants[0].schedule[1])}"
+        return (
+            f"O {restaurants[0].name} está aberto! Ele fecha às {restaurants[0].schedule[1]} em " +
+            get_time_remaining(dt.strptime(date, "%H:%M"), restaurants[0].schedule[1])
+        )
+
     else:
         restaurants = get_restaurants_from_the_day(weekday)
         restaurants_info = []
-        
+
         for r in restaurants:
             next_opening_time = get_next_restaurant_opening_time(date, r)
             if next_opening_time:
                 restaurants_info.append((next_opening_time, r.name))
-                
-        if restaurants_info:
-            restaurant_info_msgs = [
-                f"{r_i[1]} abre em {r_i[0]}"
-                for r_i in restaurants_info
-            ]
-            return f"Não há restaurantes disponíveis no momento.\n" + "\n".join(restaurant_info_msgs)
-        else:
+
+        if not restaurants_info:
             return "Não há restaurantes disponíveis no momento."
-        
-        
-def create_ru_msg() -> tuple[str, str]:
-    breakfast = f"{ru.schedule['breakfast'][0]} às {ru.schedule['breakfast'][1]}"
-    lunch = f"{ru.schedule['lunch'][0]} às {ru.schedule['lunch'][1]}"
-    dinner = f"{ru.schedule['dinner'][0]} às {ru.schedule['dinner'][1]}"
-    
-    msg = f"""*{ru.name}*
-{ru.address}
 
-*Horários* (dia útil)
-Café da manhã: {breakfast}
-Almoço: {lunch}
-Jantar: {dinner}
-"""
-    return msg, ru.image_path
-    
-    
-def create_ra_msg() -> tuple[str, str]:
-    lunch = f"{ra.schedule['lunch'][0]} às {ra.schedule['lunch'][1]}"
-    dinner = f"{ra.schedule['dinner'][0]} às {ra.schedule['dinner'][1]}"
-    
-    msg = f"""*{ra.name}*
-{ra.address}
+        restaurant_info_msgs = [
+            f"{r_i[1]} abre em {r_i[0]}"
+            for r_i in restaurants_info
+        ]
 
-*Horários* (dia útil)
-Café da manhã: Não há
-Almoço: {lunch}
-Jantar: {dinner}
-"""
+        return f"Não há restaurantes disponíveis no momento.\n" + "\n".join(restaurant_info_msgs)
 
-    return msg, ra.image_path
+def create_message(res_name: str) -> tuple[str, str]:
+    breakfast = "Não há"
+    restaurant = ra if res_name == "/ra" else rs
 
+    # Restaurantes com café da manhã
+    if res_name == "/ru":
+        restaurant = ru
+        breakfast = f"{restaurant.schedule['breakfast'][0]} às {restaurant.schedule['breakfast'][1]}"
 
-def create_rs_msg() -> tuple[str, str]:
-    breakfast = f"{ru.schedule['breakfast'][0]} às {ru.schedule['breakfast'][1]}"
-    lunch = f"{rs.schedule['lunch'][0]} às {rs.schedule['lunch'][1]}"
-    dinner = f"{rs.schedule['dinner'][0]} às {rs.schedule['dinner'][1]}"
-    
-    msg = f"""*{rs.name}*
-{rs.address}
+    lunch = f"{restaurant.schedule['lunch'][0]} às {restaurant.schedule['lunch'][1]}"
+    dinner = f"{restaurant.schedule['dinner'][0]} às {restaurant.schedule['dinner'][1]}"
 
-*Horários* (exceto domingos)
-Café da manhã (dias não-úteis): {breakfast}
-Almoço: {lunch}
-Jantar: {dinner}
-"""
-    return msg, rs.image_path
-
+    return (
+        f"*{restaurant.name}*\n"
+        f"{restaurant.address}\n"
+        f"*Horários* (dia útil)\n"
+        f"Café da manhã: {breakfast}\n"
+        f"Almoço: {lunch}\n"
+        f"Jantar: {dinner}\n"
+    ), restaurant.image_path
 
 # --------------------- #
 #    Message objects

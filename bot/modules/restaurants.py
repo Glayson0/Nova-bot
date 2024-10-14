@@ -1,10 +1,12 @@
 import dataclasses as dc
+import os
+from datetime import datetime as dt
 
 import requests
 from bs4 import BeautifulSoup
-from bot.modules.time_utils import is_date_valid, is_business_day, get_time_remaining
 
-from datetime import datetime as dt
+from bot.modules.time_utils import (get_time_remaining, is_business_day,
+                                    is_date_valid)
 
 MENU_PATH = "https://sistemas.prefeitura.unicamp.br/apps/cardapio/index.php?d={date}"
 
@@ -127,7 +129,7 @@ ru = Restaurant(
     },
     False,
     "Av. Érico Veríssimo, 50 - Cidade Universitária, Campinas - SP, 13083-851",
-    r"bot\data\RestauranteUniversitario.png"
+    os.path.join("bot", "data", "RestauranteUniversitario.png")
 )
 
 ra = Restaurant(
@@ -138,7 +140,7 @@ ra = Restaurant(
         "dinner": ("17:30", "19:00")},
     False,
     "R. Bernardo Sayão, 198 - Cidade Universitária, Campinas - SP, 13083-590",
-    r"bot\data\RestauranteAdmnistrativo.png"
+    os.path.join("bot", "data", "RestauranteAdmnistrativo.png")
 )
 
 rs = Restaurant(
@@ -149,7 +151,7 @@ rs = Restaurant(
         "dinner": ("17:30", "19:00")},
     True,
     "R. Saturnino de Brito - Cidade Universitária, Campinas - SP, 13083-889",
-    r"bot\data\RestauranteSaturnino.png"   
+    os.path.join("bot", "data", "RestauranteSaturnino.png")   
 )
 
 

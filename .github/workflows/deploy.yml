@@ -20,6 +20,8 @@ jobs:
           # Update repository
           cd Nova-bot
 
+          git pull
+
           # Update env vars
           echo "API_TOKEN=${{ secrets.API_TOKEN }}" > .env
 
